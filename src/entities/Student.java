@@ -2,7 +2,7 @@ package entities;
 
 import java.util.UUID;
 
-public class Student {
+public class Student implements Comparable<Student> {
 	
 	private UUID id;
 	private String firstName;
@@ -51,6 +51,13 @@ public class Student {
 	}
 	public void setSchoolClassName(String schoolClassName) {
 		this.schoolClassName = schoolClassName;
+	}
+
+	@Override
+	public int compareTo(Student s) {
+		int i = this.getLastName().compareTo(s.getLastName());
+		if (i != 0) return i;
+		else return this.getFirstName().compareTo(s.getFirstName());
 	}
 	
 }

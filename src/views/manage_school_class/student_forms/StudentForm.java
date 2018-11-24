@@ -41,7 +41,7 @@ public abstract class StudentForm extends GenericForm {
 		add(saveBtn);
 		add(cancelBtn);
 		
-		super.pack();
+		pack();
 	}
 
 }

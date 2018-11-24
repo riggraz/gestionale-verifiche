@@ -3,6 +3,7 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,6 +85,7 @@ public class StudentModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(s);
+			Collections.sort(l);
 			fireTableRowsInserted(l.size(), l.size());
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -109,6 +111,7 @@ public class StudentModel extends AbstractTableModel {
 			try {
 				dbManager.executeUpdate(query);
 				l.remove(rows[i]);
+				Collections.sort(l);
 				fireTableRowsDeleted(rows[i], rows[i]);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -157,11 +160,12 @@ public class StudentModel extends AbstractTableModel {
 			case 2: l.get(rowIndex).setLastName((String)aValue); break;
 			case 3: l.get(rowIndex).setSchoolClassName((String)aValue); break;
 			}
+			
+			Collections.sort(l);
+			fireTableCellUpdated(rowIndex, columnIndex);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 	
 	@Override

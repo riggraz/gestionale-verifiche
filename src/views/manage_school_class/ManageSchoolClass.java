@@ -102,10 +102,19 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 	
 	@Override
 	public void intervalAdded(ListDataEvent e) {
+		editSchoolClassBtn.setEnabled(true);
+		deleteSchoolClassBtn.setEnabled(true);
+		studentTable.insertStudentBtn.setEnabled(true);
 	}
 
 	@Override
 	public void intervalRemoved(ListDataEvent e) {
+		if (schoolClassCmbBox.getItemCount() == 0) {
+			editSchoolClassBtn.setEnabled(false);
+			deleteSchoolClassBtn.setEnabled(false);
+			studentTable.insertStudentBtn.setEnabled(false);
+			studentTable.populateTable("");
+		}
 	}
 
 }

@@ -10,13 +10,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import entities.SchoolClass;
 import models.StudentModel;
 import utils.DBManager;
 import views.manage_school_class.student_forms.InsertStudentForm;
 
-public class StudentTable extends JPanel implements ActionListener {
+public class StudentTable extends JPanel implements ActionListener, ListSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -36,6 +38,8 @@ public class StudentTable extends JPanel implements ActionListener {
 		table = new JTable();
 		studentModel = new StudentModel(dbManager);
 		table.setModel(studentModel);
+		table.getSelectionModel().addListSelectionListener(this);
+		table.removeColumn(table.getColumnModel().getColumn(0)); // nasconde la prima colonna (id)
 		
 		tableScrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
@@ -43,8 +47,9 @@ public class StudentTable extends JPanel implements ActionListener {
 		insertStudentBtn = new JButton("Nuovo studente");
 		insertStudentBtn.addActionListener(this);
 		
-		deleteStudentBtn = new JButton("Elimina studente");
+		deleteStudentBtn = new JButton("Elimina studenti (0)");
 		deleteStudentBtn.addActionListener(this);
+		deleteStudentBtn.setEnabled(false);
 		
 		studentManagementPnl = new JPanel();
 		studentManagementPnl.setLayout(new BoxLayout(studentManagementPnl, BoxLayout.Y_AXIS));
@@ -76,6 +81,12 @@ public class StudentTable extends JPanel implements ActionListener {
 				studentModel.deleteRows(table.getSelectedRows());
 			}
 		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		deleteStudentBtn.setText("Elimina studenti (" + table.getSelectedRowCount() + ")");
+		deleteStudentBtn.setEnabled(table.getSelectedRowCount() > 0);
 	}
 
 }

@@ -27,6 +27,12 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 		
 		// i button vengono solo creati, ci penserà ogni singolo form
 		// ad aggiungerli al frame
+		
+		getRootPane().setDefaultButton(saveBtn);
+		setDefaultCloseOperation(GenericForm.DISPOSE_ON_CLOSE);
+		//pack() dev'essere chiamato nei form specifici
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 	
 	@Override

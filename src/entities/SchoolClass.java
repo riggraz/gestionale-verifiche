@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public class SchoolClass {
 	
-	UUID id;
-	String name;
+	private UUID id;
+	private String name;
 	
 	public SchoolClass(String name) {
 		this.id = UUID.randomUUID();

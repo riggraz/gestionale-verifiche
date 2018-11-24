@@ -23,11 +23,7 @@ public abstract class SchoolClassForm extends GenericForm {
 		add(saveBtn);
 		add(cancelBtn);
 		
-		getRootPane().setDefaultButton(saveBtn);
-		setDefaultCloseOperation(SchoolClassForm.DISPOSE_ON_CLOSE);
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
+		super.pack();
 	}
 
 }

@@ -23,13 +23,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		l = new ArrayList<SchoolClass>();
 		
 		try {
-			ResultSet rs = dbManager.executeQuery("SELECT * FROM school_class ORDER BY name");
-			
-			while (rs.next()) {
-				l.add(new SchoolClass(
-						UUID.fromString(rs.getString("id")),
-						rs.getString("name")));
-			}
+			dbManager.executeQuery("SELECT * FROM school_class LIMIT 1");
 		} catch (SQLException e) {
 			try {
 				dbManager.executeUpdate("DROP TABLE IF EXISTS school_class");
@@ -42,7 +36,22 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 			}
 		}
 		
-		if (getSize() > 0) setSelectedItem(l.get(0));
+		loadAll();
+	}
+	
+	public void loadAll() {
+		ResultSet rs;
+		try {
+			rs = dbManager.executeQuery("SELECT * FROM school_class ORDER BY name");
+			
+			while (rs.next()) {
+				l.add(new SchoolClass(
+						UUID.fromString(rs.getString("id")),
+						rs.getString("name")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void insertItem(String name) throws SQLException {

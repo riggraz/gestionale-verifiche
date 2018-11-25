@@ -65,7 +65,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(sc);
-			Collections.sort(l);
+//			Collections.sort(l);
 			fireIntervalAdded(this, l.size()-1, l.size()-1);
 			setSelectedItem(sc);
 		} catch (SQLException e) {
@@ -83,7 +83,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(index).setName(name);
-			Collections.sort(l);
+//			Collections.sort(l);
 			fireContentsChanged(this, index, index);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -99,7 +99,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.remove(index);
-			Collections.sort(l);
+//			Collections.sort(l);
 			fireIntervalRemoved(this, index, index);
 			if (l.size() > 0) setSelectedItem(l.get(0));
 		} catch (SQLException e) {

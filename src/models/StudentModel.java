@@ -85,8 +85,8 @@ public class StudentModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(s);
-			Collections.sort(l);
-			fireTableRowsInserted(l.size(), l.size());
+//			Collections.sort(l);
+			fireTableRowsInserted(l.size()-1, l.size()-1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -111,7 +111,7 @@ public class StudentModel extends AbstractTableModel {
 			try {
 				dbManager.executeUpdate(query);
 				l.remove(rows[i]);
-				Collections.sort(l);
+//				Collections.sort(l);
 				fireTableRowsDeleted(rows[i], rows[i]);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -161,7 +161,7 @@ public class StudentModel extends AbstractTableModel {
 			case 3: l.get(rowIndex).setSchoolClassName((String)aValue); break;
 			}
 			
-			Collections.sort(l);
+//			Collections.sort(l);
 			fireTableCellUpdated(rowIndex, columnIndex);
 		} catch (SQLException e) {
 			e.printStackTrace();

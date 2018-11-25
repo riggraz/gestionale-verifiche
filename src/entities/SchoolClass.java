@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public class SchoolClass implements Comparable<SchoolClass> {
 	
+	//commento di prova
 	private UUID id;
 	private String name;
 	

@@ -3,7 +3,6 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,17 +31,17 @@ public class StudentModel extends AbstractTableModel {
 		l = new ArrayList<Student>();
 		
 		try {
-			dbManager.executeQuery("SELECT * FROM student LIMIT 1");			
+			dbManager.executeQuery("SELECT * FROM Student LIMIT 1");			
 		} catch (SQLException e) {
 			try {
-				dbManager.executeUpdate("DROP TABLE IF EXISTS student");
-				dbManager.executeUpdate("CREATE TABLE student (" +
+				dbManager.executeUpdate("DROP TABLE IF EXISTS Student");
+				dbManager.executeUpdate("CREATE TABLE Student (" +
 						"id VARCHAR(50) PRIMARY KEY, " +
-						"first_name VARCHAR(50)," +
-						"last_name VARCHAR(50)," +
-						"school_class_name VARCHAR(50) REFERENCES school_class(name) ON DELETE CASCADE ON UPDATE CASCADE)");
+						"firstName VARCHAR(50)," +
+						"lastName VARCHAR(50)," +
+						"schoolClassName VARCHAR(50) REFERENCES SchoolClass(name) ON DELETE CASCADE ON UPDATE CASCADE)");
 			} catch (SQLException e1) {
-				System.err.println("***Si è verificato un errore nella creazione della tabella student***");
+				System.err.println("***Si è verificato un errore nella creazione della tabella Student***");
 				e1.printStackTrace();
 			}
 		}
@@ -51,7 +50,7 @@ public class StudentModel extends AbstractTableModel {
 	public void loadBySchoolClassName(String schoolClassName) {
 		ResultSet rs;
 		String query = String.format(
-				"SELECT * FROM student WHERE school_class_name='%s' ORDER BY last_name, first_name",
+				"SELECT * FROM Student WHERE schoolClassName='%s' ORDER BY lastName, firstName",
 				schoolClassName);
 		
 		int previousSize = l.size();
@@ -62,9 +61,9 @@ public class StudentModel extends AbstractTableModel {
 			rs = dbManager.executeQuery(query);
 			while (rs.next()) {
 				l.add(new Student(UUID.fromString(rs.getString("id")),
-						rs.getString("first_name"),
-						rs.getString("last_name"),
-						rs.getString("school_class_name")));
+						rs.getString("firstName"),
+						rs.getString("lastName"),
+						rs.getString("schoolClassName")));
 				fireTableRowsInserted(0, l.size()-1);
 			}
 		} catch (SQLException e) {
@@ -75,7 +74,7 @@ public class StudentModel extends AbstractTableModel {
 	public void insertRow(String firstName, String lastName, String schoolClassName) {
 		Student s = new Student(firstName, lastName, schoolClassName);
 		String query = String.format(
-				"INSERT INTO student (id, first_name, last_name, school_class_name) VALUES ('%s', '%s', '%s', '%s')",
+				"INSERT INTO Student (id, firstName, lastName, schoolClassName) VALUES ('%s', '%s', '%s', '%s')",
 				s.getId(),
 				s.getFirstName(),
 				s.getLastName(),
@@ -104,7 +103,7 @@ public class StudentModel extends AbstractTableModel {
 		
 		for (int i = 0; i < rows.length; i++) {
 			String query = String.format(
-					"DELETE FROM student WHERE id='%s'",
+					"DELETE FROM Student WHERE id='%s'",
 					l.get(rows[i]).getId()
 					);
 			
@@ -142,12 +141,12 @@ public class StudentModel extends AbstractTableModel {
 	
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		String query = "UPDATE student SET ";
+		String query = "UPDATE Student SET ";
 		
 		switch (columnIndex) {
-		case 1: query += "first_name='" + aValue + "'"; break;
-		case 2: query += "last_name='" + aValue + "'"; break;
-		case 3: query += "school_class_name='" + aValue + "'"; break;
+		case 1: query += "firstName='" + aValue + "'"; break;
+		case 2: query += "lastName='" + aValue + "'"; break;
+		case 3: query += "schoolClassName='" + aValue + "'"; break;
 		}
 		
 		query += " WHERE id='" + l.get(rowIndex).getId() + "'";

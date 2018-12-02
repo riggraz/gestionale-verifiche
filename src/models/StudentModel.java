@@ -94,14 +94,8 @@ public class StudentModel extends AbstractTableModel {
 	public void deleteRows(int[] rows) {
 		if (rows.length == 0) return;
 		
-		// reverse the array to avoid index problem during deletion
-		for (int i = 0; i < rows.length / 2; i++) {
-			int tmp = rows[i];
-			rows[i] = rows[rows.length - i - 1];
-			rows[rows.length - i - 1] = tmp;
-		}
-		
-		for (int i = 0; i < rows.length; i++) {
+		// remove in inverse order to avoid index problems
+		for (int i = rows.length-1; i >= 0; i--) {
 			String query = String.format(
 					"DELETE FROM Student WHERE id='%s'",
 					l.get(rows[i]).getId()
@@ -171,7 +165,7 @@ public class StudentModel extends AbstractTableModel {
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
-
+	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		return columnClass[columnIndex];

@@ -23,7 +23,7 @@ public abstract class SchoolClassForm extends GenericForm {
 		add(saveBtn);
 		add(cancelBtn);
 		
-		super.pack();
+		pack();
 	}
 
 }

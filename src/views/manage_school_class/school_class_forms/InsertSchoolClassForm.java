@@ -24,8 +24,8 @@ public class InsertSchoolClassForm extends SchoolClassForm {
 			schoolClassModel.insertItem(schoolClassNameTxt.getText());
 			dispose();
 		} catch (SQLException e) {
-			if (e.getErrorCode() == 19) { // UNIQUE constraint failed
-				JOptionPane.showMessageDialog(this, "Esiste già una classe con questo nome");
+			if (e.getErrorCode() == 19) { // UNIQUE constraint failed on column name
+				JOptionPane.showMessageDialog(this, "Esiste già una classe con questo nome.");
 			}
 		}
 	}

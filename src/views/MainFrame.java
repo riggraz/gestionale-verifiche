@@ -1,12 +1,12 @@
 package views;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
 import utils.DBManager;
 import views.manage_school_class.ManageSchoolClass;
+import views.manage_test.ManageTest;
 
 public class MainFrame extends JFrame {
 	
@@ -18,7 +18,7 @@ public class MainFrame extends JFrame {
 		super("Gestionale verifiche");
 		
 		tabbedPane = new JTabbedPane();
-		tabbedPane.add("Gestione verifiche", new JPanel());
+		tabbedPane.add("Gestione verifiche", new ManageTest(dbManager));
 		tabbedPane.add("Gestione classi", new ManageSchoolClass(dbManager));
 		
 		add(tabbedPane);

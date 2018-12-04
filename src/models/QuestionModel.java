@@ -3,6 +3,7 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class QuestionModel {
 	}
 	
 	public void insertItem(String body, UUID testId) {
-		int number = l.size() + 1;
+		int number = l.size();
 		Question q = new Question(number, body, testId);
 		String query = String.format(
 				"INSERT INTO Question (id, number, body, testId) VALUES ('%s', %d, '%s', '%s')",
@@ -71,6 +72,67 @@ public class QuestionModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteItem(UUID id) {
+		String query = String.format(
+				"DELETE FROM Question WHERE id='%s'",
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			
+			int questionNumber = getQuestionIndexById(id);
+			l.remove(questionNumber);
+			for (int i = questionNumber; i < l.size(); i++) {
+				updateNumber(l.get(i).getId(), i);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateNumber(UUID id, int newQuestionNumber) {
+		String query = String.format(
+				"UPDATE Question SET number=%d WHERE id='%s'",
+				newQuestionNumber,
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			l.get(getQuestionIndexById(id)).setNumber(newQuestionNumber);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateBody(UUID id, String newBody) {
+		String query = String.format(
+				"UPDATE Question SET body='%s' WHERE id='%s'",
+				newBody,
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			l.get(getQuestionIndexById(id)).setBody(newBody);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getItemsCount() {
+		return l.size();
+	}
+	
+	public List<Question> getQuestions() {
+		return Collections.unmodifiableList(l);
+	}
+	
+	private int getQuestionIndexById(UUID id) {
+		for (int i = 0; i < l.size(); i++) {
+			if (l.get(i).getId() == id) return i; 
+		}
+		return -1;
 	}
 
 }

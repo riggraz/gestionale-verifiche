@@ -2,20 +2,35 @@ package views.manage_test.test_forms;
 
 import java.util.UUID;
 
+import entities.Question;
+import models.QuestionModel;
 import models.TestModel;
+import utils.DBManager;
 
 public class EditTestForm extends TestForm {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private TestModel testModel;
 
-	public EditTestForm(TestModel testModel) {
-		super("Modifica verifica", testModel, null);
+	public EditTestForm(
+			DBManager dbManager,
+			TestModel testModel,
+			UUID testId,
+			String testName,
+			String testDescription
+			) {
+		super("Modifica verifica", testModel);
+
+		setTestId(testId);
 		
-		this.testModel = testModel;
+		setTestName(testName);
+		setTestDescription(testDescription);
 		
-		// get test from db
-//		setTestId(testId);
+		QuestionModel questionModel = new QuestionModel(dbManager);
+		questionModel.loadByTestId(testId);
+		setQuestionModel(questionModel);
+		
+		for (Question question : questionModel.getQuestions()) {
+			addQAndA(question);
+		}
 	}
 }

@@ -3,6 +3,7 @@ package views.manage_test;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 
 import models.TestModel;
 import utils.DBManager;
+import views.manage_test.test_forms.EditTestForm;
 import views.manage_test.test_forms.InsertTestForm;
 
 public class ManageTest extends JPanel implements ActionListener, ListSelectionListener {
@@ -31,6 +33,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	JTable testsTable;
 	
 	JPanel testManagementPnl;
+	JButton editTestBtn;
 	JButton deleteTestBtn;
 	
 	public ManageTest(DBManager dbManager) {
@@ -49,11 +52,17 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		tableScrollPane = new JScrollPane(testsTable);
 		testsTable.setFillsViewportHeight(true);
 		
+		editTestBtn = new JButton("Modifica verifica");
+		editTestBtn.setEnabled(false);
+		editTestBtn.addActionListener(this);
+		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
 		deleteTestBtn.setEnabled(false);
 		deleteTestBtn.addActionListener(this);
+		
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
+		testManagementPnl.add(editTestBtn);
 		testManagementPnl.add(deleteTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
@@ -65,6 +74,13 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == insertTestBtn) {
 			new InsertTestForm(dbManager, testModel);
+		} else if (e.getSource() == editTestBtn) {
+			new EditTestForm(
+				dbManager,
+				testModel,
+				(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
+				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
+				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
 		} else if (e.getSource() == deleteTestBtn) {
 			int dialogResult = JOptionPane.showConfirmDialog(null,
 					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +
@@ -80,6 +96,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	public void valueChanged(ListSelectionEvent e) {
 		deleteTestBtn.setText("Elimina verifiche (" + testsTable.getSelectedRowCount() + ")");
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
+		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
 }

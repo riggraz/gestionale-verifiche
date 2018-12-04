@@ -11,10 +11,12 @@ public class InsertTestForm extends TestForm {
 	private static final long serialVersionUID = 1L;
 
 	public InsertTestForm(DBManager dbManager, TestModel testModel) {
-		super("Nuova verifica", testModel, new QuestionModel(dbManager));
+		super("Nuova verifica", testModel);
 		
 		UUID testId = testModel.insertRow("", "");
 		setTestId(testId);
+		
+		setQuestionModel(new QuestionModel(dbManager));
 	}
 
 }

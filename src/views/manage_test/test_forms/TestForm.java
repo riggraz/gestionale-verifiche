@@ -1,7 +1,10 @@
 package views.manage_test.test_forms;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -48,24 +52,29 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	private JScrollPane qAndAScrollPane;
 	private JPanel qAndAMainPnl;
 	
-	List<JPanel> qAndAPnls;
+	private List<JPanel> qAndAPnls;
 	
-	List<JPanel> qInfoPnls;
-	List<JLabel> qNumberLbls;
-	List<JButton> qDeleteBtns; 
+	private List<JPanel> qInfoPnls;
+	private List<JLabel> qNumberLbls;
+	private List<JButton> qDeleteBtns; 
 	
-	List<JTextArea> qBodyTxts;
+	private List<JTextArea> qBodyTxts;
 	
 	private JButton addQuestionBtn;
+	
+	private JPanel bottomPnl;
+	private JLabel errorsCountLbl;
 
 	public TestForm(String frameName, TestModel testModel) {
 		super(frameName);
 		this.testModel = testModel;
 		
-		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+//		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		setLayout(new BorderLayout());
 		
 		infoPnl = new JPanel(new GridLayout(2, 2));
 		infoPnl.setMaximumSize(new Dimension(600, 100));
+		infoPnl.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 		nameLbl = new JLabel("Nome:");
 		nameTxt = new JTextField();
 		descriptionLbl = new JLabel("Descrizione:");
@@ -96,14 +105,24 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		addQuestionBtn.addActionListener(this);
 		qAndAMainPnl.add(addQuestionBtn);
 		
+		bottomPnl = new JPanel();
+		bottomPnl.setMaximumSize(new Dimension(600, 50));
+		bottomPnl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
+		errorsCountLbl = new JLabel("0 errori");
+		errorsCountLbl.setFont(new Font("Serif", Font.PLAIN, 24));
+		bottomPnl.add(errorsCountLbl);
+		
 		nameTxt.getDocument().addDocumentListener(this);
 		descriptionTxt.getDocument().addDocumentListener(this);
 		
-		add(infoPnl);
-		add(qAndAScrollPane);
+		add(infoPnl, BorderLayout.NORTH);
+		add(qAndAScrollPane, BorderLayout.CENTER);
+		add(bottomPnl, BorderLayout.SOUTH);
+		
+		updateErrorsCountLbl();
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(640, 640);
+        setSize(640, 800);
         setVisible(true);
 	}
 	
@@ -119,18 +138,28 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		// informations about Question
 		JPanel qInfoPnl = new JPanel();
 		JLabel qNumberLbl = new JLabel("Domanda " + (question.getNumber() + 1));
+		qNumberLbl.setFont(new Font("Serif", Font.PLAIN, 18));
 		JButton qDeleteBtn = new JButton("elimina");
 		qDeleteBtn.setFocusable(false);
+		
+		final JTextArea qBodyTxt = new JTextArea(question.getBody());
+		
 		qDeleteBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// delete from db
 				questionModel.deleteItem(question.getId());
+				
+				// delete from memory
 				qAndAMainPnl.remove(qAndAPnl);
 				qInfoPnls.remove(qInfoPnl);
 				qNumberLbls.remove(qNumberLbl);
 				qDeleteBtns.remove(qDeleteBtn);
-				// can't delete qBodyTxt because it defined later
+				qBodyTxts.remove(qBodyTxt);
+				
+				// update view
 				updateQNumberLbls();
+				updateErrorsCountLbl();
 				qAndAMainPnl.revalidate();
 				qAndAMainPnl.repaint();
 			}
@@ -139,7 +168,6 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qInfoPnl.add(qDeleteBtn);
 		
 		// body of Question
-		final JTextArea qBodyTxt = new JTextArea(question.getBody());
 		JScrollPane qBodyScrollPane = new JScrollPane(qBodyTxt);
 		qBodyScrollPane.removeMouseWheelListener(qBodyScrollPane.getMouseWheelListeners()[0]);
 		qBodyScrollPane.setPreferredSize(new Dimension(350, 60));
@@ -147,6 +175,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				questionModel.updateBody(question.getId(), qBodyTxt.getText());
+				updateErrorsCountLbl();
 			}
 			
 			@Override
@@ -180,13 +209,11 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qAndAMainPnl.remove(addQuestionBtn);
 		qAndAMainPnl.add(addQuestionBtn);
 		
+		updateErrorsCountLbl();
+		
 		// repaint
 		qAndAMainPnl.revalidate();
 		qAndAMainPnl.repaint();
-		
-		qBodyTxt.grabFocus();
-		qAndAScrollPane.validate();
-		qAndAScrollPane.getVerticalScrollBar().setValue(qAndAScrollPane.getVerticalScrollBar().getMaximum());
 	}
 
 	@Override
@@ -201,6 +228,9 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 						newQuestion.getBody(),
 						newQuestion.getTestId())
 			);
+			qBodyTxts.get(questionsList.size()-1).grabFocus();
+			qAndAScrollPane.validate();
+			qAndAScrollPane.getVerticalScrollBar().setValue(qAndAScrollPane.getVerticalScrollBar().getMaximum());
 		}
 	}
 
@@ -211,6 +241,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		} else if (e.getDocument() == descriptionTxt.getDocument()) {
 			testModel.updateDescription(testId, descriptionTxt.getText());
 		}
+		updateErrorsCountLbl();
 	}
 
 	@Override
@@ -240,6 +271,38 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		for (int i = 0; i < questionsList.size(); i++) {
 			qNumberLbls.get(i).setText("Domanda " + (i+1));
 		}
+	}
+	
+	private void updateErrorsCountLbl() {
+		int count = 0;
+		
+		if (nameTxt.getText().equals("")) {
+			count++;
+			nameTxt.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		} else {
+			nameTxt.setBorder(new JTextField().getBorder());
+		}
+		
+		if (descriptionTxt.getText().equals("")) {
+			count++;
+			descriptionTxt.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		} else {
+			descriptionTxt.setBorder(new JTextField().getBorder());
+		}
+		
+		for (int i = 0; i < qBodyTxts.size(); i++) {
+			if (qBodyTxts.get(i).getText().equals("")) {
+				count++;
+				qBodyTxts.get(i).setBorder(new LineBorder(Color.RED, 2));
+			} else {
+				qBodyTxts.get(i).setBorder(new JTextArea().getBorder());
+			}
+		}
+		
+		errorsCountLbl.setText(Integer.toString(count) + " errori");
+		
+		if (count == 0) errorsCountLbl.setForeground(Color.BLUE);
+		else errorsCountLbl.setForeground(Color.RED);
 	}
 
 }

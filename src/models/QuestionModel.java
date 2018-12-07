@@ -12,12 +12,16 @@ import utils.DBManager;
 
 public class QuestionModel {
 	
-	DBManager dbManager;
-	List<Question> l;
+	private DBManager dbManager;
+	private List<Question> l;
+	
+	private AnswerModel answerModel;
 	
 	public QuestionModel(DBManager dbManager) {
 		this.dbManager = dbManager;
 		l = new ArrayList<Question>();
+		
+		answerModel = new AnswerModel(dbManager);
 		
 		try {
 			dbManager.executeQuery("SELECT * FROM Question LIMIT 1");			
@@ -28,7 +32,8 @@ public class QuestionModel {
 						"id VARCHAR(50) PRIMARY KEY, " +
 						"number INTEGER," +
 						"body TEXT," +
-						"testId VARCHAR(50) REFERENCES Test(id) ON DELETE CASCADE ON UPDATE CASCADE)");
+						"testId VARCHAR(50) REFERENCES Test(id) ON DELETE CASCADE ON UPDATE CASCADE," +
+						"correctAnswer INTEGER)");
 			} catch (SQLException e1) {
 				System.err.println("***Si è verificato un errore nella creazione della tabella Question***");
 				e1.printStackTrace();
@@ -45,11 +50,16 @@ public class QuestionModel {
 		try {
 			rs = dbManager.executeQuery(query);
 			while (rs.next()) {
-				l.add(new Question(UUID.fromString(rs.getString("id")),
+				Question q = new Question(UUID.fromString(rs.getString("id")),
 						rs.getInt("number"),
 						rs.getString("body"),
-						UUID.fromString(rs.getString("testId"))));
+						UUID.fromString(rs.getString("testId")),
+						rs.getInt("correctAnswer"));
+				
+				l.add(q);
 			}
+			
+			for (Question q : l) q.setAnswers(answerModel.loadByQuestionId(q.getId())); 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -57,23 +67,28 @@ public class QuestionModel {
 	
 	public void insertItem(String body, UUID testId) {
 		int number = l.size();
-		Question q = new Question(number, body, testId);
+		Question q = new Question(number, body, testId, -1);
 		String query = String.format(
-				"INSERT INTO Question (id, number, body, testId) VALUES ('%s', %d, '%s', '%s')",
+				"INSERT INTO Question (id, number, body, testId, correctAnswer) VALUES ('%s', %d, '%s', '%s', %d)",
 				q.getId(),
 				q.getNumber(),
 				q.getBody(),
-				testId
-				);
+				testId,
+				q.getCorrectAnswer());
+		
 		try {
 			dbManager.executeUpdate(query);
+			
+			answerModel.insertItemsByQuestionId(q.getId());
+			q.setAnswers(answerModel.loadByQuestionId(q.getId()));
+			
 			l.add(q);
-//			Collections.sort(l);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	// da finire
 	public void deleteItem(UUID id) {
 		String query = String.format(
 				"DELETE FROM Question WHERE id='%s'",
@@ -118,6 +133,24 @@ public class QuestionModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateCorrectAnswer(UUID id, int newCorrectAnswer) {
+		String query = String.format(
+				"UPDATE Question SET correctAnswer=%d WHERE id='%s'",
+				newCorrectAnswer,
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			l.get(getQuestionIndexById(id)).setCorrectAnswer(newCorrectAnswer);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateAnswerBody(UUID answerId, String newAnswerBody) {
+		answerModel.updateBody(answerId, newAnswerBody);
 	}
 	
 	public int getItemsCount() {

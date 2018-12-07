@@ -119,7 +119,7 @@ public class TestModel extends AbstractTableModel {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setName(newName);
 			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
-			
+			updateUpdatedAt(id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -134,6 +134,21 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setDescription(newDescription);
+			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
+			updateUpdatedAt(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateUpdatedAt(UUID id) {
+		String query = String.format(
+				"UPDATE Test SET updatedAt=CURRENT_TIMESTAMP WHERE id='%s'",
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+//			l.get(getTestIndexById(id)).setUpdatedAt();
 			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
 		} catch (SQLException e) {
 			e.printStackTrace();

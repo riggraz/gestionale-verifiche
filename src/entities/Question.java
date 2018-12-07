@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Question {
@@ -8,21 +10,30 @@ public class Question {
 	private int number;
 	private String body;
 	private UUID testId;
+	private int correctAnswer;
 	
-	public Question(UUID id, int number, String body, UUID testId) {
+	private List<Answer> answers;
+	
+	public Question(UUID id, int number, String body, UUID testId, int correctAnswer) {
 		super();
 		this.id = id;
 		this.number = number;
 		this.body = body;
 		this.testId = testId;
+		this.correctAnswer = correctAnswer;
+		
+		this.answers = new ArrayList<Answer>();
 	}
 
-	public Question(int number, String body, UUID testId) {
+	public Question(int number, String body, UUID testId, int correctAnswer) {
 		super();
 		this.id = UUID.randomUUID();
 		this.number = number;
 		this.body = body;
 		this.testId = testId;
+		this.correctAnswer = correctAnswer;
+		
+		this.answers = new ArrayList<Answer>();
 	}
 
 	public UUID getId() {
@@ -36,7 +47,7 @@ public class Question {
 		return number;
 	}
 	public void setNumber(int number) {
-		this.number = number;
+		if (number >= 0) this.number = number;
 	}
 
 	public String getBody() {
@@ -51,6 +62,20 @@ public class Question {
 	}
 	public void setTestId(UUID testId) {
 		this.testId = testId;
+	}
+	
+	public int getCorrectAnswer() {
+		return correctAnswer;
+	}
+	public void setCorrectAnswer(int correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
+	
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
 	}
 	
 }

@@ -16,7 +16,7 @@ public class StudentModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	
 	private DBManager dbManager;
-	List<Student> l;
+	private List<Student> l;
 	
 	private final String[] columnNames = new String[] {
 			"id", "Nome", "Cognome", "Classe"

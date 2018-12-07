@@ -12,6 +12,7 @@ import javax.swing.table.AbstractTableModel;
 
 import entities.Test;
 import utils.DBManager;
+import utils.SQLUtils;
 
 public class TestModel extends AbstractTableModel {
 
@@ -21,11 +22,11 @@ public class TestModel extends AbstractTableModel {
 	private List<Test> l;
 	
 	private final String[] columnNames = new String[] {
-			"id", "Nome", "Descrizione", "Creata", "Modificata"
+			"id", "Nome", "Descrizione", "Creata", "Modificata", "Errori"
 	};
 
 	private final Class<?>[] columnClass = new Class<?>[] {
-			String.class, String.class, String.class, String.class, String.class
+			String.class, String.class, String.class, String.class, String.class, Integer.class
 	};
 	
 	public TestModel(DBManager dbManager) {
@@ -77,8 +78,8 @@ public class TestModel extends AbstractTableModel {
 		String query = String.format(
 				"INSERT INTO Test (id, name, description) VALUES ('%s', '%s', '%s')",
 				t.getId().toString(),
-				t.getName(),
-				t.getDescription());
+				SQLUtils.escapeString(t.getName()),
+				SQLUtils.escapeString(t.getDescription()));
 				
 		try {
 			dbManager.executeUpdate(query);
@@ -99,8 +100,7 @@ public class TestModel extends AbstractTableModel {
 		for (int i = rows.length-1; i >= 0; i--) {
 			String query = String.format(
 					"DELETE FROM Test WHERE id='%s'",
-					l.get(rows[i]).getId()
-					);
+					l.get(rows[i]).getId());
 			
 			try {
 				dbManager.executeUpdate(query);
@@ -116,7 +116,7 @@ public class TestModel extends AbstractTableModel {
 	public void updateName(UUID id, String newName) {
 		String query = String.format(
 				"UPDATE Test SET name='%s' WHERE id='%s'",
-				newName,
+				SQLUtils.escapeString(newName),
 				id);
 		
 		try {
@@ -132,7 +132,7 @@ public class TestModel extends AbstractTableModel {
 	public void updateDescription(UUID id, String newDescription) {
 		String query = String.format(
 				"UPDATE Test SET description='%s' WHERE id='%s'",
-				newDescription,
+				SQLUtils.escapeString(newDescription),
 				id);
 		
 		try {
@@ -202,6 +202,7 @@ public class TestModel extends AbstractTableModel {
 		case 2: return l.get(rowIndex).getDescription();
 		case 3: return l.get(rowIndex).getCreatedAt();
 		case 4: return l.get(rowIndex).getUpdatedAt();
+		case 5: return l.get(rowIndex).hasErrors();
 		default: return null;
 		}
 	}
@@ -211,8 +212,8 @@ public class TestModel extends AbstractTableModel {
 		String query = "UPDATE Test SET ";
 		
 		switch (columnIndex) {
-		case 1: query += "name='" + aValue + "'"; break;
-		case 2: query += "description='" + aValue + "'"; break;
+		case 1: query += "name='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
+		case 2: query += "description='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
 		}
 		
 		query += " WHERE id='" + l.get(rowIndex).getId() + "'";

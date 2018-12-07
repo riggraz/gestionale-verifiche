@@ -50,6 +50,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		testsTable.setModel(testModel);
 		testsTable.getSelectionModel().addListSelectionListener(this);
 		testsTable.removeColumn(testsTable.getColumnModel().getColumn(0)); // nasconde la prima colonna (id)
+		testsTable.removeColumn(testsTable.getColumnModel().getColumn(4)); // nasconde la colonna hasErrors
 		tableScrollPane = new JScrollPane(testsTable);
 		testsTable.setFillsViewportHeight(true);
 		
@@ -88,7 +89,22 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
 		} else if (e.getSource() == printTestBtn) {
-			JOptionPane.showMessageDialog(this, "Da implementare");
+			int dialogResult = 0;
+			
+			int hasErrors = (int) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 5);
+			if (hasErrors == 1) {
+				String testName = (String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1);
+				dialogResult = JOptionPane.showConfirmDialog(this,
+						"La verifica '" + testName + "' non è stata compilata correttamente.\n"
+						+ "Vuoi comunque procedere alla stampa?", "Sei sicuro?",
+						JOptionPane.YES_NO_OPTION);
+			}
+			
+			if (hasErrors == 0 || dialogResult == JOptionPane.YES_OPTION) {
+				System.out.println("Procedo alla stampa");
+			} else {
+				System.out.println("Niente stampa");
+			}
 		} else if (e.getSource() == deleteTestBtn) {
 			int dialogResult = JOptionPane.showConfirmDialog(this,
 					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +

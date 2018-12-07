@@ -10,6 +10,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import entities.SchoolClass;
 import utils.DBManager;
+import utils.SQLUtils;
 
 public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 
@@ -47,7 +48,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 			while (rs.next()) {
 				l.add(new SchoolClass(
 						UUID.fromString(rs.getString("id")),
-						rs.getString("name")));
+						SQLUtils.escapeString(rs.getString("name"))));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -59,7 +60,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		String query = String.format(
 				"INSERT INTO SchoolClass (id, name) VALUES ('%s', '%s')",
 				sc.getId().toString(),
-				sc.getName());
+				SQLUtils.escapeString(sc.getName()));
 				
 		try {
 			dbManager.executeUpdate(query);
@@ -76,7 +77,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 	public void updateItem(int index, String name) throws SQLException {
 		String query = String.format(
 				"UPDATE SchoolClass SET name='%s' WHERE id='%s'",
-				name,
+				SQLUtils.escapeString(name),
 				l.get(index).getId());
 		
 		try {

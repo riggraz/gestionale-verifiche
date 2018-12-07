@@ -11,7 +11,7 @@ public class Test {
 	private String description;
 	private String createdAt;
 	private String updatedAt;
-	private int hasErrors;
+	private int hasErrors; // 0: no errors, 1: errors; we chose int (and not boolean) for coherency with sqlite datatypes
 	
 	public Test(UUID id, String name, String description, String createdAt, String updatedAt, int hasErrors) {
 		this.id = id;

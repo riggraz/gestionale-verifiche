@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import entities.Question;
 import utils.DBManager;
+import utils.SQLUtils;
 
 public class QuestionModel {
 	
@@ -72,7 +73,7 @@ public class QuestionModel {
 				"INSERT INTO Question (id, number, body, testId, correctAnswer) VALUES ('%s', %d, '%s', '%s', %d)",
 				q.getId(),
 				q.getNumber(),
-				q.getBody(),
+				SQLUtils.escapeString(q.getBody()),
 				testId,
 				q.getCorrectAnswer());
 		
@@ -124,7 +125,7 @@ public class QuestionModel {
 	public void updateBody(UUID id, String newBody) {
 		String query = String.format(
 				"UPDATE Question SET body='%s' WHERE id='%s'",
-				newBody,
+				SQLUtils.escapeString(newBody),
 				id);
 		
 		try {

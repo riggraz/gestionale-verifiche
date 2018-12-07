@@ -10,6 +10,7 @@ import javax.swing.table.AbstractTableModel;
 
 import entities.Student;
 import utils.DBManager;
+import utils.SQLUtils;
 
 public class StudentModel extends AbstractTableModel {
 
@@ -51,7 +52,7 @@ public class StudentModel extends AbstractTableModel {
 		ResultSet rs;
 		String query = String.format(
 				"SELECT * FROM Student WHERE schoolClassName='%s' ORDER BY lastName, firstName",
-				schoolClassName);
+				SQLUtils.escapeString(schoolClassName));
 		
 		int previousSize = l.size();
 		l.clear();
@@ -76,10 +77,9 @@ public class StudentModel extends AbstractTableModel {
 		String query = String.format(
 				"INSERT INTO Student (id, firstName, lastName, schoolClassName) VALUES ('%s', '%s', '%s', '%s')",
 				s.getId(),
-				s.getFirstName(),
-				s.getLastName(),
-				s.getSchoolClassName()
-				);
+				SQLUtils.escapeString(s.getFirstName()),
+				SQLUtils.escapeString(s.getLastName()),
+				SQLUtils.escapeString(s.getSchoolClassName()));
 		
 		try {
 			dbManager.executeUpdate(query);
@@ -98,8 +98,7 @@ public class StudentModel extends AbstractTableModel {
 		for (int i = rows.length-1; i >= 0; i--) {
 			String query = String.format(
 					"DELETE FROM Student WHERE id='%s'",
-					l.get(rows[i]).getId()
-					);
+					l.get(rows[i]).getId());
 			
 			try {
 				dbManager.executeUpdate(query);
@@ -138,9 +137,9 @@ public class StudentModel extends AbstractTableModel {
 		String query = "UPDATE Student SET ";
 		
 		switch (columnIndex) {
-		case 1: query += "firstName='" + aValue + "'"; break;
-		case 2: query += "lastName='" + aValue + "'"; break;
-		case 3: query += "schoolClassName='" + aValue + "'"; break;
+		case 1: query += "firstName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
+		case 2: query += "lastName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
+		case 3: query += "schoolClassName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
 		}
 		
 		query += " WHERE id='" + l.get(rowIndex).getId() + "'";

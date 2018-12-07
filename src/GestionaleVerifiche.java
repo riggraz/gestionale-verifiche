@@ -11,13 +11,23 @@ public class GestionaleVerifiche {
 		try {
 			dbManager = new DBManager(DBManager.JDBCDriverSQLite, DBManager.JDBCURLSQLite);
 			dbManager.executeUpdate("PRAGMA foreign_keys = ON;");
+			
+			// close db connection on program shutdown
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				try {
+					dbManager.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}));
+			
+			new MainFrame(dbManager);
+			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		new MainFrame(dbManager);
 	}
 
 }

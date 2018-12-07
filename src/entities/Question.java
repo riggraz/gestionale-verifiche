@@ -10,7 +10,7 @@ public class Question {
 	private int number;
 	private String body;
 	private UUID testId;
-	private int correctAnswer;
+	private int correctAnswer; // -1 if no correctAnswer has been chosen; 0,1,2 or 3 indicate the number of the correctAnswer
 	
 	private List<Answer> answers;
 	

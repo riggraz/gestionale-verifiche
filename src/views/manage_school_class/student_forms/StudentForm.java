@@ -1,6 +1,7 @@
 package views.manage_school_class.student_forms;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
@@ -19,8 +20,8 @@ public abstract class StudentForm extends GenericForm {
 	JLabel schoolClassLbl;
 	JComboBox<String> schoolClassCmbBox;
 
-	public StudentForm(String frameName) {
-		super(frameName);
+	public StudentForm(JComponent parent, String frameName) {
+		super(parent, frameName);
 		
 		firstNameLbl = new JLabel("Nome: ");
 		firstNameTxt = new JTextField();

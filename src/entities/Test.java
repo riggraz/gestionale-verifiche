@@ -11,13 +11,15 @@ public class Test {
 	private String description;
 	private String createdAt;
 	private String updatedAt;
+	private int hasErrors;
 	
-	public Test(UUID id, String name, String description, String createdAt, String updatedAt) {
+	public Test(UUID id, String name, String description, String createdAt, String updatedAt, int hasErrors) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.hasErrors = hasErrors;
 	}
 	
 	public Test(String name, String description) {
@@ -26,7 +28,7 @@ public class Test {
 		this.description = description;
 		this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
 		this.updatedAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
-
+		this.hasErrors = 1;
 	}
 
 	public UUID getId() {
@@ -62,6 +64,13 @@ public class Test {
 	}
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	
+	public int hasErrors() {
+		return hasErrors;
+	}
+	public void setHasErrors(int hasErrors) {
+		this.hasErrors = hasErrors;
 	}
 
 }

@@ -34,6 +34,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	
 	JPanel testManagementPnl;
 	JButton editTestBtn;
+	JButton printTestBtn;
 	JButton deleteTestBtn;
 	
 	public ManageTest(DBManager dbManager) {
@@ -56,6 +57,10 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		editTestBtn.setEnabled(false);
 		editTestBtn.addActionListener(this);
 		
+		printTestBtn = new JButton("Stampa verifica");
+		printTestBtn.setEnabled(false);
+		printTestBtn.addActionListener(this);
+		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
 		deleteTestBtn.setEnabled(false);
 		deleteTestBtn.addActionListener(this);
@@ -63,6 +68,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
 		testManagementPnl.add(editTestBtn);
+		testManagementPnl.add(printTestBtn);
 		testManagementPnl.add(deleteTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
@@ -81,8 +87,10 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 				(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
+		} else if (e.getSource() == printTestBtn) {
+			JOptionPane.showMessageDialog(this, "Da implementare");
 		} else if (e.getSource() == deleteTestBtn) {
-			int dialogResult = JOptionPane.showConfirmDialog(null,
+			int dialogResult = JOptionPane.showConfirmDialog(this,
 					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +
 					" verifiche selezionate?", "Sei sicuro?",
 					JOptionPane.YES_NO_OPTION);
@@ -97,6 +105,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		deleteTestBtn.setText("Elimina verifiche (" + testsTable.getSelectedRowCount() + ")");
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
 		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
+		printTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
 }

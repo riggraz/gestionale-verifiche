@@ -2,6 +2,7 @@ package views.manage_school_class.school_class_forms;
 
 import java.sql.SQLException;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import models.SchoolClassModel;
@@ -12,8 +13,8 @@ public class InsertSchoolClassForm extends SchoolClassForm {
 	
 	private SchoolClassModel schoolClassModel;
 	
-	public InsertSchoolClassForm(SchoolClassModel schoolClassModel) {
-		super("Aggiungi classe");
+	public InsertSchoolClassForm(JComponent parent, SchoolClassModel schoolClassModel) {
+		super(parent, "Aggiungi classe");
 		
 		this.schoolClassModel = schoolClassModel;
 	}

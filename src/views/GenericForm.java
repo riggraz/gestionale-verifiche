@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,7 +20,7 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 	protected JButton saveBtn;
 	protected JButton cancelBtn;
 	
-	public GenericForm(String frameName) {
+	public GenericForm(JComponent parent, String frameName) {
 		super(frameName);
 		
 		setLayout(new GridLayout(0, 2, 12, 6));
@@ -36,7 +37,7 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 		getRootPane().setDefaultButton(saveBtn);
 		setDefaultCloseOperation(GenericForm.DISPOSE_ON_CLOSE);
 		//pack() dev'essere chiamato nei form specifici
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
 	

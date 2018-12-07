@@ -2,6 +2,7 @@ package views.manage_school_class.school_class_forms;
 
 import java.sql.SQLException;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import models.SchoolClassModel;
@@ -12,8 +13,8 @@ public class EditSchoolClassForm extends SchoolClassForm {
 	private SchoolClassModel schoolClassModel;
 	private int index;
 	
-	public EditSchoolClassForm(SchoolClassModel schoolClassModel, int index) {
-		super("Modifica classe");
+	public EditSchoolClassForm(JComponent parent, SchoolClassModel schoolClassModel, int index) {
+		super(parent, "Modifica classe");
 		
 		this.schoolClassModel = schoolClassModel;
 		this.index = index;

@@ -1,5 +1,7 @@
 package views.manage_school_class.student_forms;
 
+import javax.swing.JComponent;
+
 import models.StudentModel;
 
 public class InsertStudentForm extends StudentForm {
@@ -9,8 +11,8 @@ public class InsertStudentForm extends StudentForm {
 	StudentModel studentModel;
 	String selectedSchoolClassName;
 
-	public InsertStudentForm(StudentModel studentModel, String selectedSchoolClassName) {
-		super("Aggiungi studente");
+	public InsertStudentForm(JComponent parent, StudentModel studentModel, String selectedSchoolClassName) {
+		super(parent, "Aggiungi studente");
 		
 		schoolClassCmbBox.addItem(selectedSchoolClassName);
 		

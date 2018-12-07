@@ -67,15 +67,15 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == insertSchoolClassBtn) {
-			new InsertSchoolClassForm(schoolClassModel);
+			new InsertSchoolClassForm(this, schoolClassModel);
 		}
 		
 		if (e.getSource() == editSchoolClassBtn) {
-			new EditSchoolClassForm(schoolClassModel, schoolClassCmbBox.getSelectedIndex());
+			new EditSchoolClassForm(this, schoolClassModel, schoolClassCmbBox.getSelectedIndex());
 		}
 		
 		if (e.getSource() == deleteSchoolClassBtn) {
-			int dialogResult = JOptionPane.showConfirmDialog(null,
+			int dialogResult = JOptionPane.showConfirmDialog(this,
 					"Vuoi davvero eliminare la classe " +
 					((SchoolClass) schoolClassCmbBox.getSelectedItem()).getName() +
 					"?\nVerranno eliminati anche tutti i suoi studenti.", "Sei sicuro?",

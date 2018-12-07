@@ -143,8 +143,6 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		add(qAndAScrollPane, BorderLayout.CENTER);
 		add(bottomPnl, BorderLayout.SOUTH);
 		
-		updateErrorsCountLbl();
-		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(720, 800);
         setVisible(true);
@@ -399,8 +397,14 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		
 		errorsCountLbl.setText(Integer.toString(count) + " errori");
 		
-		if (count == 0) errorsCountLbl.setForeground(Color.BLUE);
-		else errorsCountLbl.setForeground(Color.RED);
+		if (count == 0) {
+			testModel.updateHasErrors(testId, 0);
+			errorsCountLbl.setForeground(Color.BLUE);
+		}
+		else {
+			testModel.updateHasErrors(testId, 1);
+			errorsCountLbl.setForeground(Color.RED);
+		}
 	}
 
 }

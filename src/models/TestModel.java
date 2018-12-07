@@ -2,6 +2,8 @@ package models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +42,8 @@ public class TestModel extends AbstractTableModel {
 						"name VARCHAR(50)," +
 						"description TEXT," +
 						"createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
-						"updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)");
+						"updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
+						"hasErrors INTEGER DEFAULT 1 NOT NULL)");
 			} catch (SQLException e1) {
 				System.err.println("***Si è verificato un errore nella creazione della tabella Test***");
 				e1.printStackTrace();
@@ -61,7 +64,8 @@ public class TestModel extends AbstractTableModel {
 						rs.getString("name"),
 						rs.getString("description"),
 						rs.getString("createdAt"),
-						rs.getString("createdAt")));
+						rs.getString("updatedAt"),
+						rs.getInt("hasErrors")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -148,8 +152,23 @@ public class TestModel extends AbstractTableModel {
 		
 		try {
 			dbManager.executeUpdate(query);
-//			l.get(getTestIndexById(id)).setUpdatedAt();
+			l.get(getTestIndexById(id)).setUpdatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
 			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateHasErrors(UUID id, int hasErrors) {
+		String query = String.format(
+				"UPDATE Test SET hasErrors=%d WHERE id='%s'",
+				hasErrors,
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			l.get(getTestIndexById(id)).setHasErrors(hasErrors);
+			updateUpdatedAt(id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

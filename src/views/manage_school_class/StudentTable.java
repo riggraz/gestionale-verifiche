@@ -1,5 +1,6 @@
 package views.manage_school_class;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -35,6 +36,8 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 	public StudentTable(DBManager dbManager, JComboBox<SchoolClass> schoolClassCmbBox) {
 		this.schoolClassCmbBox = schoolClassCmbBox;
 		
+		setLayout(new BorderLayout(24, 24));
+		
 		table = new JTable();
 		studentModel = new StudentModel(dbManager);
 		table.setModel(studentModel);
@@ -56,8 +59,8 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 		studentManagementPnl.add(insertStudentBtn);
 		studentManagementPnl.add(deleteStudentBtn);
 		
-		add(tableScrollPane);
-		add(studentManagementPnl);
+		add(tableScrollPane, BorderLayout.CENTER);
+		add(studentManagementPnl, BorderLayout.EAST);
 	}
 	
 	public void populateTable(String schoolClassName) {
@@ -68,12 +71,13 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == insertStudentBtn) {
 			new InsertStudentForm(
+					this,
 					studentModel,
 					((SchoolClass)schoolClassCmbBox.getSelectedItem()).getName());
 		}
 		
 		if (e.getSource() == deleteStudentBtn) {
-			int dialogResult = JOptionPane.showConfirmDialog(null,
+			int dialogResult = JOptionPane.showConfirmDialog(this,
 					"Vuoi davvero eliminare i " + table.getSelectedRowCount() +
 					" studenti selezionati?", "Sei sicuro?",
 					JOptionPane.YES_NO_OPTION);

@@ -23,12 +23,12 @@ public class Test {
 	}
 	
 	public Test(String name, String description) {
-		this.id = UUID.randomUUID();
-		this.name = name;
-		this.description = description;
-		this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
-		this.updatedAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
-		this.hasErrors = 1;
+		this(UUID.randomUUID(),
+				name,
+				description,
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())),
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())),
+				1);
 	}
 
 	public UUID getId() {

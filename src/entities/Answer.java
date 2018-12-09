@@ -18,11 +18,7 @@ public class Answer {
 	}
 	
 	public Answer(int number, String body, UUID questionId) {
-		super();
-		this.id = UUID.randomUUID();
-		this.number = number;
-		this.body = body;
-		this.questionId = questionId;
+		this(UUID.randomUUID(), number, body, questionId);
 	}
 	
 	public UUID getId() {

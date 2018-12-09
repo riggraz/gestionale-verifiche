@@ -26,14 +26,7 @@ public class Question {
 	}
 
 	public Question(int number, String body, UUID testId, int correctAnswer) {
-		super();
-		this.id = UUID.randomUUID();
-		this.number = number;
-		this.body = body;
-		this.testId = testId;
-		this.correctAnswer = correctAnswer;
-		
-		this.answers = new ArrayList<Answer>();
+		this(UUID.randomUUID(), number, body, testId, correctAnswer);
 	}
 
 	public UUID getId() {

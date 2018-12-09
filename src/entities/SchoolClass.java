@@ -8,14 +8,13 @@ public class SchoolClass implements Comparable<SchoolClass> {
 	private UUID id;
 	private String name;
 	
-	public SchoolClass(String name) {
-		this.id = UUID.randomUUID();
-		this.name = name;
-	}
-	
 	public SchoolClass(UUID id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+	
+	public SchoolClass(String name) {
+		this(UUID.randomUUID(), name);
 	}
 	
 	public UUID getId() {

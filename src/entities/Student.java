@@ -18,11 +18,7 @@ public class Student implements Comparable<Student> {
 	}
 	
 	public Student(String firstName, String lastName, String schoolClassName) {
-		super();
-		this.id = UUID.randomUUID();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.schoolClassName = schoolClassName;
+		this(UUID.randomUUID(), firstName, lastName, schoolClassName);
 	}
 	
 	public UUID getId() {

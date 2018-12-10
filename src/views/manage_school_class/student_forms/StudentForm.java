@@ -1,5 +1,8 @@
 package views.manage_school_class.student_forms;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -43,6 +46,26 @@ public abstract class StudentForm extends GenericForm {
 		add(cancelBtn);
 		
 		pack();
+	}
+	
+	protected int checkErrorsAndUpdateUI() {
+		int errorsCount = 0;
+		
+		if (firstNameTxt.getText().equals("")) {
+			errorsCount++;
+			firstNameTxt.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		} else {
+			firstNameTxt.setBorder(new JTextField().getBorder());
+		}
+		
+		if (lastNameTxt.getText().equals("")) {
+			errorsCount++;
+			lastNameTxt.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		} else {
+			lastNameTxt.setBorder(new JTextField().getBorder());
+		}
+		
+		return errorsCount;
 	}
 
 }

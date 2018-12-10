@@ -22,11 +22,13 @@ public class InsertStudentForm extends StudentForm {
 
 	@Override
 	public void save() {
-		studentModel.insertRow(
-				firstNameTxt.getText(),
-				lastNameTxt.getText(),
-				selectedSchoolClassName);
-		dispose();
+		if (checkErrorsAndUpdateUI() == 0) {
+			studentModel.insertRow(
+					firstNameTxt.getText(),
+					lastNameTxt.getText(),
+					selectedSchoolClassName);
+			dispose();
+		}
 	}
 
 }

@@ -1,5 +1,8 @@
 package views.manage_school_class.school_class_forms;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -24,6 +27,17 @@ public abstract class SchoolClassForm extends GenericForm {
 		add(saveBtn);
 		add(cancelBtn);
 		pack();
+	}
+	
+	protected int checkErrorsAndUpdateUI() {
+		int errorsCount = 0;
+		
+		if (schoolClassNameTxt.getText().equals("")) {
+			errorsCount++;
+			schoolClassNameTxt.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		}
+		
+		return errorsCount;
 	}
 
 }

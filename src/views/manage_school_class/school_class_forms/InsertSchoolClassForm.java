@@ -22,8 +22,10 @@ public class InsertSchoolClassForm extends SchoolClassForm {
 	@Override
 	public void save() {
 		try {
-			schoolClassModel.insertItem(schoolClassNameTxt.getText());
-			dispose();
+			if (checkErrorsAndUpdateUI() == 0) {
+				schoolClassModel.insertItem(schoolClassNameTxt.getText());
+				dispose();
+			}
 		} catch (SQLException e) {
 			if (e.getErrorCode() == 19) { // UNIQUE constraint failed on column name
 				JOptionPane.showMessageDialog(this, "Esiste già una classe con questo nome.");

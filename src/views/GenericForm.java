@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public abstract class GenericForm extends JFrame implements ActionListener {
 
@@ -24,6 +25,7 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 		super(frameName);
 		
 		setLayout(new GridLayout(0, 2, 12, 6));
+		getRootPane().setBorder(new EmptyBorder(8, 16, 8, 16));
 		
 		saveBtn = new JButton("Salva");
 		saveBtn.addActionListener(this);
@@ -38,6 +40,7 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 		setDefaultCloseOperation(GenericForm.DISPOSE_ON_CLOSE);
 		//pack() dev'essere chiamato nei form specifici
 		setLocationRelativeTo(parent);
+		setResizable(false);
 		setVisible(true);
 	}
 	
@@ -49,6 +52,9 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 			dispose();
 		}
 	}
+	
+	// ogni form dovrà implementare il proprio controllo errori
+	protected abstract int checkErrorsAndUpdateUI();
 	
 	// Ogni form dovrà implementare la propria funzione save
 	public abstract void save();

@@ -370,12 +370,12 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			nameTxt.setBorder(new JTextField().getBorder());
 		}
 		// test description
-		if (descriptionTxt.getText().equals("")) {
-			count++;
-			descriptionTxt.setBorder(errorBorder);
-		} else {
-			descriptionTxt.setBorder(new JTextField().getBorder());
-		}
+//		if (descriptionTxt.getText().equals("")) {
+//			count++;
+//			descriptionTxt.setBorder(errorBorder);
+//		} else {
+//			descriptionTxt.setBorder(new JTextField().getBorder());
+//		}
 		
 		for (int i = 0; i < qBodyTxts.size(); i++) {
 			// question body

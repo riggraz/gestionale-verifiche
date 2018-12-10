@@ -1,6 +1,7 @@
 package views.manage_test;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -42,8 +44,10 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		this.testModel = new TestModel(dbManager);
 		
 		setLayout(new BorderLayout(24, 24));
+		setBorder(new EmptyBorder(16, 16, 16, 16));
 		
 		insertTestBtn = new JButton("Nuova verifica");
+		insertTestBtn.setPreferredSize(new Dimension(250, 35));
 		insertTestBtn.addActionListener(this);
 		
 		testsTable = new JTable();
@@ -51,18 +55,22 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		testsTable.getSelectionModel().addListSelectionListener(this);
 		testsTable.removeColumn(testsTable.getColumnModel().getColumn(0)); // nasconde la prima colonna (id)
 		testsTable.removeColumn(testsTable.getColumnModel().getColumn(4)); // nasconde la colonna hasErrors
+		testsTable.setRowHeight(20);
 		tableScrollPane = new JScrollPane(testsTable);
 		testsTable.setFillsViewportHeight(true);
 		
 		editTestBtn = new JButton("Modifica verifica");
+		editTestBtn.setMaximumSize(new Dimension(250, 35));
 		editTestBtn.setEnabled(false);
 		editTestBtn.addActionListener(this);
 		
 		printTestBtn = new JButton("Stampa verifica");
+		printTestBtn.setMaximumSize(new Dimension(250, 35));
 		printTestBtn.setEnabled(false);
 		printTestBtn.addActionListener(this);
 		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
+		deleteTestBtn.setMaximumSize(new Dimension(250, 35));
 		deleteTestBtn.setEnabled(false);
 		deleteTestBtn.addActionListener(this);
 		

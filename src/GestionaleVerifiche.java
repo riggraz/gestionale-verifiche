@@ -8,6 +8,7 @@ public class GestionaleVerifiche {
 	private DBManager dbManager;
 	
 	public GestionaleVerifiche() {
+		
 		try {
 			dbManager = new DBManager(DBManager.JDBCDriverSQLite, DBManager.JDBCURLSQLite);
 			dbManager.executeUpdate("PRAGMA foreign_keys = ON;");

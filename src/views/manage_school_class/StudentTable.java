@@ -1,6 +1,7 @@
 package views.manage_school_class;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -43,14 +44,17 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 		table.setModel(studentModel);
 		table.getSelectionModel().addListSelectionListener(this);
 		table.removeColumn(table.getColumnModel().getColumn(0)); // nasconde la prima colonna (id)
+		table.setRowHeight(20);
 		
 		tableScrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		
 		insertStudentBtn = new JButton("Nuovo studente");
+		insertStudentBtn.setMaximumSize(new Dimension(300, 35));
 		insertStudentBtn.addActionListener(this);
 		
 		deleteStudentBtn = new JButton("Elimina studenti (0)");
+		deleteStudentBtn.setMaximumSize(new Dimension(300, 35));
 		deleteStudentBtn.addActionListener(this);
 		deleteStudentBtn.setEnabled(false);
 		

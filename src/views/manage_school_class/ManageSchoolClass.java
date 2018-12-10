@@ -1,6 +1,7 @@
 package views.manage_school_class;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -33,6 +35,7 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 	
 	public ManageSchoolClass(DBManager dbManager) {
 		setLayout(new BorderLayout(24, 24));
+		setBorder(new EmptyBorder(16, 16, 16, 16));
 		
 		schoolClassCmbBox = new JComboBox<SchoolClass>();
 		schoolClassModel = new SchoolClassModel(dbManager);
@@ -41,12 +44,15 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 		schoolClassModel.addListDataListener(this);
 		
 		insertSchoolClassBtn = new JButton("Nuova classe");
+		insertSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
 		insertSchoolClassBtn.addActionListener(this);
 		
 		editSchoolClassBtn = new JButton("Modifica classe");
+		editSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
 		editSchoolClassBtn.addActionListener(this);
 		
 		deleteSchoolClassBtn = new JButton("Elimina classe");
+		deleteSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
 		deleteSchoolClassBtn.addActionListener(this);
 		
 		schoolClassManagementPnl = new JPanel();

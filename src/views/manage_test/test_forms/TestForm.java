@@ -24,9 +24,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -73,29 +73,31 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	
 	private JPanel bottomPnl;
 	private JLabel errorsCountLbl;
+	
+	private Border errorBorder;
 
 	public TestForm(String frameName, TestModel testModel) {
 		super(frameName);
 		this.testModel = testModel;
 		
-//		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		setLayout(new BorderLayout());
 		
 		infoPnl = new JPanel();
 		infoPnl.setLayout(new BoxLayout(infoPnl, BoxLayout.Y_AXIS));
 		infoPnl.setMaximumSize(new Dimension(600, 100));
-		infoPnl.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+		infoPnl.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY), new EmptyBorder(8, 16, 8, 16)));
 		namePnl = new JPanel();
 		namePnl.setLayout(new BoxLayout(namePnl, BoxLayout.X_AXIS));
 		nameLbl = new JLabel("Nome:");
-		nameLbl.setFont(new Font("Serif", Font.PLAIN, 18));
+		nameLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 14));
 		nameTxt = new JTextField();
-		nameTxt.setFont(new Font("Serif", Font.PLAIN, 24));
+		nameTxt.setFont(new Font(new JTextField().getFont().getFamily(), Font.PLAIN, 22));
 		descriptionPnl = new JPanel();
 		descriptionPnl.setLayout(new BoxLayout(descriptionPnl, BoxLayout.X_AXIS));
 		descriptionLbl = new JLabel("Descrizione:");
-		descriptionLbl.setFont(new Font("Serif", Font.PLAIN, 18));
+		descriptionLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 14));
 		descriptionTxt = new JTextField();
+		descriptionTxt.setFont(new Font(new JTextField().getFont().getFamily(), Font.PLAIN, 14));
 		namePnl.add(nameLbl);
 		namePnl.add(nameTxt);
 		descriptionPnl.add(descriptionLbl);
@@ -124,6 +126,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		correctABtns = new ArrayList<JRadioButton[]>();
 		
 		addQuestionBtn = new JButton("Nuova domanda");
+		addQuestionBtn.setMinimumSize(new Dimension(200, 35));
 		addQuestionBtn.setFocusable(false);
 		addQuestionBtn.setAlignmentX(CENTER_ALIGNMENT);
 		addQuestionBtn.addActionListener(this);
@@ -133,11 +136,13 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		bottomPnl.setMaximumSize(new Dimension(600, 50));
 		bottomPnl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
 		errorsCountLbl = new JLabel("0 errori");
-		errorsCountLbl.setFont(new Font("Serif", Font.PLAIN, 24));
+		errorsCountLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 24));
 		bottomPnl.add(errorsCountLbl);
 		
 		nameTxt.getDocument().addDocumentListener(this);
 		descriptionTxt.getDocument().addDocumentListener(this);
+		
+		setBorders();
 		
 		add(infoPnl, BorderLayout.NORTH);
 		add(qAndAScrollPane, BorderLayout.CENTER);
@@ -169,7 +174,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		} else if (e.getDocument() == descriptionTxt.getDocument()) {
 			testModel.updateDescription(testId, descriptionTxt.getText());
 		}
-		updateErrorsCountLbl();
+		checkErrorsAndUpdateUI();
 	}
 
 	@Override
@@ -215,10 +220,10 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qAndAPnl.setPreferredSize(new Dimension(700, 300));
 		qAndAPnl.setMinimumSize(new Dimension(600, 300));
 		qAndAPnl.setAlignmentX(Component.CENTER_ALIGNMENT);
-		qAndAPnl.setBorder(new CompoundBorder(new EmptyBorder(24, 8, 24, 8), null));
+		qAndAPnl.setBorder(new CompoundBorder(new EmptyBorder(24, 16, 24, 16), null));
 		
 		// informations about Question
-		qNumberLbl.setFont(new Font("Serif", Font.PLAIN, 18));
+		qNumberLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.BOLD, 18));
 		
 		qDeleteBtn.setFocusable(false);
 		final List<JPanel[]> aPnlsRef = this.aPnls;
@@ -242,7 +247,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				
 				// update view
 				updateQNumberLbls();
-				updateErrorsCountLbl();
+				checkErrorsAndUpdateUI();
 				qAndAMainPnl.revalidate();
 				qAndAMainPnl.repaint();
 			}
@@ -259,7 +264,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			public void insertUpdate(DocumentEvent e) {
 				questionModel.updateBody(question.getId(), qBodyTxt.getText());
 				testModel.updateUpdatedAt(testId);
-				updateErrorsCountLbl();
+				checkErrorsAndUpdateUI();
 			}
 			@Override
 			public void removeUpdate(DocumentEvent e) { insertUpdate(e); }	
@@ -290,7 +295,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					questionModel.updateCorrectAnswer(question.getId(), j);
-					updateErrorsCountLbl();
+					checkErrorsAndUpdateUI();
 				}
 			});
 			correctAnswersGroup.add(correctAnswers[i]);
@@ -302,7 +307,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				@Override
 				public void insertUpdate(DocumentEvent e) {
 					questionModel.updateAnswerBody(answer.getId(), currentAnswerTxt.getText());
-					updateErrorsCountLbl();
+					checkErrorsAndUpdateUI();
 				}	
 				@Override
 				public void removeUpdate(DocumentEvent e) {	insertUpdate(e); }
@@ -332,7 +337,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qAndAMainPnl.remove(addQuestionBtn);
 		qAndAMainPnl.add(addQuestionBtn);
 		
-		updateErrorsCountLbl();
+		checkErrorsAndUpdateUI();
 		
 		// repaint
 		qAndAMainPnl.revalidate();
@@ -345,21 +350,29 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		}
 	}
 	
-	private void updateErrorsCountLbl() {
+	private void setBorders() {
+		Border emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+		Border redLine = BorderFactory.createLineBorder(Color.RED);
+		
+		errorBorder = BorderFactory.createCompoundBorder(
+				redLine,
+				BorderFactory.createCompoundBorder(emptyBorder, emptyBorder));
+	}
+	
+	private void checkErrorsAndUpdateUI() {
 		int count = 0;
-		final int BORDER_WIDTH = 1;
 		
 		// test name
 		if (nameTxt.getText().equals("")) {
 			count++;
-			nameTxt.setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_WIDTH));
+			nameTxt.setBorder(errorBorder);
 		} else {
 			nameTxt.setBorder(new JTextField().getBorder());
 		}
 		// test description
 		if (descriptionTxt.getText().equals("")) {
 			count++;
-			descriptionTxt.setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_WIDTH));
+			descriptionTxt.setBorder(errorBorder);
 		} else {
 			descriptionTxt.setBorder(new JTextField().getBorder());
 		}
@@ -368,7 +381,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			// question body
 			if (qBodyTxts.get(i).getText().equals("")) {
 				count++;
-				qBodyTxts.get(i).setBorder(new LineBorder(Color.RED, BORDER_WIDTH));
+				qBodyTxts.get(i).setBorder(errorBorder);
 			} else {
 				qBodyTxts.get(i).setBorder(new JTextArea().getBorder());
 			}
@@ -377,7 +390,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			for (int j = 0; j < 4; j++) {
 				if (aTxts.get(i)[j].getText().equals("")) {
 					count++;
-					aTxts.get(i)[j].setBorder(new LineBorder(Color.RED, BORDER_WIDTH));
+					aTxts.get(i)[j].setBorder(errorBorder);
 				} else {
 					aTxts.get(i)[j].setBorder(new JTextField().getBorder());
 				}

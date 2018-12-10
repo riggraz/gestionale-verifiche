@@ -18,8 +18,8 @@ public class MainFrame extends JFrame {
 		super("Gestionale verifiche");
 		
 		tabbedPane = new JTabbedPane();
-		tabbedPane.add("Gestione verifiche", new ManageTest(dbManager));
-		tabbedPane.add("Gestione classi", new ManageSchoolClass(dbManager));
+		tabbedPane.addTab("Gestione verifiche", new ManageTest(dbManager));
+		tabbedPane.addTab("Gestione classi", new ManageSchoolClass(dbManager));
 		
 		add(tabbedPane);
 		

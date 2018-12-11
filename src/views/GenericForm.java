@@ -58,5 +58,5 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 	
 	// Ogni form dovrà implementare la propria funzione save
 	public abstract void save();
-
+	
 }

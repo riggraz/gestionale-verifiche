@@ -3,6 +3,7 @@ package views.manage_school_class.student_forms;
 import javax.swing.JComponent;
 
 import models.StudentModel;
+import utils.FormUtils;
 
 public class InsertStudentForm extends StudentForm {
 
@@ -24,8 +25,8 @@ public class InsertStudentForm extends StudentForm {
 	public void save() {
 		if (checkErrorsAndUpdateUI() == 0) {
 			studentModel.insertRow(
-					firstNameTxt.getText(),
-					lastNameTxt.getText(),
+					FormUtils.capitalizeFirstLetter(firstNameTxt.getText()),
+					FormUtils.capitalizeFirstLetter(lastNameTxt.getText()),
 					selectedSchoolClassName);
 			dispose();
 		}

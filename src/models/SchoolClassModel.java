@@ -3,6 +3,7 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,8 +66,8 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(sc);
-//			Collections.sort(l);
-			fireIntervalAdded(this, l.size()-1, l.size()-1);
+			Collections.sort(l);
+			fireContentsChanged(this, 0, l.size()-1);
 			setSelectedItem(sc);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -83,8 +84,8 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(index).setName(name);
-//			Collections.sort(l);
-			fireContentsChanged(this, index, index);
+			Collections.sort(l);
+			fireContentsChanged(this, 0, l.size()-1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -99,7 +100,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		try {
 			dbManager.executeUpdate(query);
 			l.remove(index);
-//			Collections.sort(l);
+			Collections.sort(l);
 			fireIntervalRemoved(this, index, index);
 			if (l.size() > 0) setSelectedItem(l.get(0));
 		} catch (SQLException e) {

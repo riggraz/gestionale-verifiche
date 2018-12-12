@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -136,6 +138,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		bottomPnl.setMaximumSize(new Dimension(600, 50));
 		bottomPnl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
 		errorsCountLbl = new JLabel("0 errori");
+		errorsCountLbl.setForeground(Color.BLUE);
 		errorsCountLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 24));
 		bottomPnl.add(errorsCountLbl);
 		
@@ -156,14 +159,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == addQuestionBtn) {
-			questionModel.insertItem("", testId);
-			
-			Question newQuestion = questionsList.get(questionsList.size() - 1);
-			addQAndA(newQuestion);
-			
-			qBodyTxts.get(questionsList.size()-1).grabFocus();
-			qAndAScrollPane.validate();
-			qAndAScrollPane.getVerticalScrollBar().setValue(qAndAScrollPane.getVerticalScrollBar().getMaximum());
+			dbAddQAndA();
 		}
 	}
 
@@ -198,6 +194,17 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	public void setQuestionModel(QuestionModel questionModel) {
 		this.questionModel = questionModel;
 		this.questionsList = questionModel.getQuestions();
+	}
+	
+	private void dbAddQAndA() {
+		questionModel.insertItem("", testId);
+		
+		Question newQuestion = questionsList.get(questionsList.size() - 1);
+		addQAndA(newQuestion);
+		
+		qBodyTxts.get(questionsList.size()-1).grabFocus();
+		qAndAScrollPane.validate();
+		qAndAScrollPane.getVerticalScrollBar().setValue(qAndAScrollPane.getVerticalScrollBar().getMaximum());
 	}
 	
 	protected void addQAndA(Question question) {
@@ -302,6 +309,14 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			
 			final Answer answer = question.getAnswers().get(i);
 			answers[i] = new JTextField(answer.getBody());
+			if (i == 3) answers[i].addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					dbAddQAndA();
+				}
+				@Override
+				public void focusGained(FocusEvent e) { }
+			});
 			final JTextField currentAnswerTxt = answers[i];
 			answers[i].getDocument().addDocumentListener(new DocumentListener() {
 				@Override
@@ -369,13 +384,6 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		} else {
 			nameTxt.setBorder(new JTextField().getBorder());
 		}
-		// test description
-//		if (descriptionTxt.getText().equals("")) {
-//			count++;
-//			descriptionTxt.setBorder(errorBorder);
-//		} else {
-//			descriptionTxt.setBorder(new JTextField().getBorder());
-//		}
 		
 		for (int i = 0; i < qBodyTxts.size(); i++) {
 			// question body

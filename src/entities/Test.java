@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-public class Test {
+public class Test implements Comparable<Test> {
 	
 	private UUID id;
 	private String name;
@@ -71,6 +71,11 @@ public class Test {
 	}
 	public void setHasErrors(int hasErrors) {
 		this.hasErrors = hasErrors;
+	}
+
+	@Override
+	public int compareTo(Test t) {
+		return -updatedAt.compareTo(t.getUpdatedAt());
 	}
 
 }

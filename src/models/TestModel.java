@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,8 +85,8 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(t);
-//			Collections.sort(t);
-			fireTableRowsInserted(l.size()-1, l.size()-1);
+			Collections.sort(l);
+			fireTableDataChanged();
 			return t.getId();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,12 +106,13 @@ public class TestModel extends AbstractTableModel {
 			try {
 				dbManager.executeUpdate(query);
 				l.remove(rows[i]);
-//				Collections.sort(l);
-				fireTableRowsDeleted(rows[i], rows[i]);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		Collections.sort(l);
+		fireTableDataChanged();
 	}
 	
 	public void updateName(UUID id, String newName) {
@@ -122,7 +124,7 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setName(newName);
-			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
+			
 			updateUpdatedAt(id);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -138,7 +140,7 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setDescription(newDescription);
-			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
+			
 			updateUpdatedAt(id);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -153,7 +155,12 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setUpdatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
-			fireTableRowsUpdated(getTestIndexById(id), getTestIndexById(id));
+			
+			Collections.sort(l);
+			fireTableDataChanged();
+			
+			// problema: questa funzione viene chiamata 2 volte
+			// ad ogni modifica invece di 1 volta
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -207,35 +214,35 @@ public class TestModel extends AbstractTableModel {
 		}
 	}
 	
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		String query = "UPDATE Test SET ";
-		
-		switch (columnIndex) {
-		case 1: query += "name='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
-		case 2: query += "description='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
-		}
-		
-		query += " WHERE id='" + l.get(rowIndex).getId() + "'";
-		
-		try {
-			dbManager.executeUpdate(query);
-			
-			switch (columnIndex) {
-			case 1: l.get(rowIndex).setName((String)aValue); break;
-			case 2: l.get(rowIndex).setDescription((String)aValue); break;
-			}
-			
-//			Collections.sort(l);
-			fireTableCellUpdated(rowIndex, columnIndex);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//	@Override
+//	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+//		String query = "UPDATE Test SET ";
+//		
+//		switch (columnIndex) {
+//		case 1: query += "name='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
+//		case 2: query += "description='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
+//		}
+//		
+//		query += " WHERE id='" + l.get(rowIndex).getId() + "'";
+//		
+//		try {
+//			dbManager.executeUpdate(query);
+//			
+//			switch (columnIndex) {
+//			case 1: l.get(rowIndex).setName((String)aValue); break;
+//			case 2: l.get(rowIndex).setDescription((String)aValue); break;
+//			}
+//			
+////			Collections.sort(l);
+//			fireTableCellUpdated(rowIndex, columnIndex);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex == 1 || columnIndex == 2;
+		return false;
 	}
 	
 	private int getTestIndexById(UUID id) {

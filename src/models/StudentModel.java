@@ -3,6 +3,7 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,9 +55,7 @@ public class StudentModel extends AbstractTableModel {
 				"SELECT * FROM Student WHERE schoolClassName='%s' ORDER BY lastName, firstName",
 				SQLUtils.escapeString(schoolClassName));
 		
-		int previousSize = l.size();
 		l.clear();
-		if (previousSize > 0) fireTableRowsDeleted(0, previousSize-1);
 		
 		try {
 			rs = dbManager.executeQuery(query);
@@ -65,8 +64,8 @@ public class StudentModel extends AbstractTableModel {
 						rs.getString("firstName"),
 						rs.getString("lastName"),
 						rs.getString("schoolClassName")));
-				fireTableRowsInserted(0, l.size()-1);
 			}
+			fireTableDataChanged();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -84,8 +83,8 @@ public class StudentModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.add(s);
-//			Collections.sort(l);
-			fireTableRowsInserted(l.size()-1, l.size()-1);
+			Collections.sort(l);
+			fireTableDataChanged();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -103,12 +102,13 @@ public class StudentModel extends AbstractTableModel {
 			try {
 				dbManager.executeUpdate(query);
 				l.remove(rows[i]);
-//				Collections.sort(l);
-				fireTableRowsDeleted(rows[i], rows[i]);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		Collections.sort(l);
+		fireTableDataChanged();
 	}
 
 	@Override
@@ -153,8 +153,8 @@ public class StudentModel extends AbstractTableModel {
 			case 3: l.get(rowIndex).setSchoolClassName((String)aValue); break;
 			}
 			
-//			Collections.sort(l);
-			fireTableCellUpdated(rowIndex, columnIndex);
+			Collections.sort(l);
+			fireTableDataChanged();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

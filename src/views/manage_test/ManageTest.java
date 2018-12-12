@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.UUID;
 
 import javax.swing.BoxLayout;
@@ -58,6 +60,18 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		testsTable.setRowHeight(20);
 		tableScrollPane = new JScrollPane(testsTable);
 		testsTable.setFillsViewportHeight(true);
+		testsTable.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2 && testsTable.getSelectedRow() != -1) {
+					new EditTestForm(
+							dbManager,
+							testModel,
+							(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
+							(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
+							(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
+				}
+			}
+		});
 		
 		editTestBtn = new JButton("Modifica verifica");
 		editTestBtn.setMaximumSize(new Dimension(250, 35));
@@ -126,6 +140,8 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		if (testsTable.getSelectedRow() == -1 && testsTable.getRowCount() > 0) testsTable.setRowSelectionInterval(0, 0);
+		
 		deleteTestBtn.setText("Elimina verifiche (" + testsTable.getSelectedRowCount() + ")");
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
 		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);

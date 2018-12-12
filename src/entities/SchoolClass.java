@@ -38,7 +38,7 @@ public class SchoolClass implements Comparable<SchoolClass> {
 
 	@Override
 	public int compareTo(SchoolClass sc) {
-		return this.getName().compareTo(sc.getName());
+		return name.compareTo(sc.getName());
 	}
 
 }

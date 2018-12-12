@@ -52,10 +52,12 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 		table.setFillsViewportHeight(true);
 		
 		insertStudentBtn = new JButton("Nuovo studente");
+		insertStudentBtn.setEnabled(false);
 		insertStudentBtn.setMaximumSize(new Dimension(300, 35));
 		insertStudentBtn.addActionListener(this);
 		
 		massAddStudentBtn = new JButton("Aggiungi lista studenti");
+		massAddStudentBtn.setEnabled(false);
 		massAddStudentBtn.setMaximumSize(new Dimension(300, 35));
 		massAddStudentBtn.addActionListener(this);
 		
@@ -109,6 +111,11 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 	public void valueChanged(ListSelectionEvent e) {
 		deleteStudentBtn.setText("Elimina studenti (" + table.getSelectedRowCount() + ")");
 		deleteStudentBtn.setEnabled(table.getSelectedRowCount() > 0);
+	}
+	
+	public void setEnabledOnInsertBtns(boolean enabled) {
+		insertStudentBtn.setEnabled(enabled);
+		massAddStudentBtn.setEnabled(enabled);
 	}
 
 }

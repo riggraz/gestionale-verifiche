@@ -101,7 +101,7 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 			dbManager.executeUpdate(query);
 			l.remove(index);
 			Collections.sort(l);
-			fireIntervalRemoved(this, index, index);
+			fireContentsChanged(this, 0, l.size()-1);
 			if (l.size() > 0) setSelectedItem(l.get(0));
 		} catch (SQLException e) {
 			e.printStackTrace();

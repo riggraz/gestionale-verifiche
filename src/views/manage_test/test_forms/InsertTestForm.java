@@ -13,8 +13,9 @@ public class InsertTestForm extends TestForm {
 	public InsertTestForm(DBManager dbManager, TestModel testModel) {
 		super("Nuova verifica", testModel);
 		
-		UUID testId = testModel.insertRow("", "");
+		UUID testId = testModel.insertRow("Nuova verifica", "");
 		setTestId(testId);
+		setTestName("Nuova verifica");
 		
 		setQuestionModel(new QuestionModel(dbManager));
 	}

@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -309,14 +307,15 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			
 			final Answer answer = question.getAnswers().get(i);
 			answers[i] = new JTextField(answer.getBody());
-			if (i == 3) answers[i].addFocusListener(new FocusListener() {
-				@Override
-				public void focusLost(FocusEvent e) {
-					dbAddQAndA();
-				}
-				@Override
-				public void focusGained(FocusEvent e) { }
-			});
+			if (i == 3) {
+				answers[i].setFocusTraversalKeysEnabled(false);
+				answers[i].addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyChar() == KeyEvent.VK_TAB) dbAddQAndA();
+					}
+				});
+			}
 			final JTextField currentAnswerTxt = answers[i];
 			answers[i].getDocument().addDocumentListener(new DocumentListener() {
 				@Override

@@ -48,10 +48,12 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 		insertSchoolClassBtn.addActionListener(this);
 		
 		editSchoolClassBtn = new JButton("Modifica classe");
+		editSchoolClassBtn.setEnabled(false);
 		editSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
 		editSchoolClassBtn.addActionListener(this);
 		
 		deleteSchoolClassBtn = new JButton("Elimina classe");
+		deleteSchoolClassBtn.setEnabled(false);
 		deleteSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
 		deleteSchoolClassBtn.addActionListener(this);
 		
@@ -103,24 +105,24 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 
 	@Override
 	public void contentsChanged(ListDataEvent e) {
-		studentTable.populateTable(((SchoolClass)schoolClassCmbBox.getSelectedItem()).getName());
+		SchoolClass selectedSchoolClass = (SchoolClass)schoolClassCmbBox.getSelectedItem();
+		if (selectedSchoolClass != null) studentTable.populateTable(selectedSchoolClass.getName());
+		
+		if (schoolClassCmbBox.getItemCount() > 0) {
+			editSchoolClassBtn.setEnabled(true);
+			deleteSchoolClassBtn.setEnabled(true);
+			studentTable.setEnabledOnInsertBtns(true);
+		} else {
+			editSchoolClassBtn.setEnabled(false);
+			deleteSchoolClassBtn.setEnabled(false);
+			studentTable.setEnabledOnInsertBtns(false);
+		}
 	}
 	
 	@Override
-	public void intervalAdded(ListDataEvent e) {
-		editSchoolClassBtn.setEnabled(true);
-		deleteSchoolClassBtn.setEnabled(true);
-		studentTable.insertStudentBtn.setEnabled(true);
-	}
+	public void intervalAdded(ListDataEvent e) { }
 
 	@Override
-	public void intervalRemoved(ListDataEvent e) {
-		if (schoolClassCmbBox.getItemCount() == 0) {
-			editSchoolClassBtn.setEnabled(false);
-			deleteSchoolClassBtn.setEnabled(false);
-			studentTable.insertStudentBtn.setEnabled(false);
-			studentTable.populateTable("");
-		}
-	}
+	public void intervalRemoved(ListDataEvent e) { }
 
 }

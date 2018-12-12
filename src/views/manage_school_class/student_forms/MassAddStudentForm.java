@@ -6,7 +6,9 @@ import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import models.StudentModel;
 import utils.FormUtils;
@@ -37,9 +39,12 @@ public class MassAddStudentForm extends GenericForm {
 				"rispettando il seguente formato:<br /><b>nome[spazio]cognome[a capo]</b></html>");
 		
 		studentsTxtArea = new JTextArea(14, 24);
+		JScrollPane studentsTxtAreaScrollPane = new JScrollPane(studentsTxtArea);
+		studentsTxtAreaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		studentsTxtAreaScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		add(infoLbl);
-		add(studentsTxtArea);
+		add(studentsTxtAreaScrollPane);
 		
 		add(saveBtn);
 		add(cancelBtn);

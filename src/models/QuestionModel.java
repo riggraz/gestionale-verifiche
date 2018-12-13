@@ -91,6 +91,8 @@ public class QuestionModel {
 	
 	// da finire
 	public void deleteItem(UUID id) {
+		if (getQuestionIndexById(id) == -1) return;
+		
 		String query = String.format(
 				"DELETE FROM Question WHERE id='%s'",
 				id);
@@ -109,6 +111,8 @@ public class QuestionModel {
 	}
 	
 	public void updateNumber(UUID id, int newQuestionNumber) {
+		if (getQuestionIndexById(id) == -1) return;
+		
 		String query = String.format(
 				"UPDATE Question SET number=%d WHERE id='%s'",
 				newQuestionNumber,
@@ -123,6 +127,8 @@ public class QuestionModel {
 	}
 	
 	public void updateBody(UUID id, String newBody) {
+		if (getQuestionIndexById(id) == -1) return;
+		
 		String query = String.format(
 				"UPDATE Question SET body='%s' WHERE id='%s'",
 				SQLUtils.escapeString(newBody),
@@ -137,6 +143,8 @@ public class QuestionModel {
 	}
 	
 	public void updateCorrectAnswer(UUID id, int newCorrectAnswer) {
+		if (getQuestionIndexById(id) == -1) return;
+		
 		String query = String.format(
 				"UPDATE Question SET correctAnswer=%d WHERE id='%s'",
 				newCorrectAnswer,

@@ -318,6 +318,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					questionModel.updateCorrectAnswer(question.getId(), j);
+					testModel.updateUpdatedAt(testId);
 					checkErrorsAndUpdateUI();
 					qAndAPnl.repaint();
 				}
@@ -402,8 +403,6 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	}
 	
 	private void checkErrorsAndUpdateUI() {
-		System.out.println("checkErrorsAndUpdateUI()");
-		
 		int count = 0;
 		
 		// test name

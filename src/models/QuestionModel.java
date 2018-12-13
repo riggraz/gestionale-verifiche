@@ -127,6 +127,7 @@ public class QuestionModel {
 				"UPDATE Question SET body='%s' WHERE id='%s'",
 				SQLUtils.escapeString(newBody),
 				id);
+		System.out.println("Aggiornando body di domanda: " + id);
 		
 		try {
 			dbManager.executeUpdate(query);

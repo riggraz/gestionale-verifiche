@@ -75,6 +75,8 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	private JLabel errorsCountLbl;
 	
 	private Border errorBorder;
+	private Border textFieldBorder;
+	private Border textAreaBorder;
 
 	public TestForm(String frameName, TestModel testModel) {
 		super(frameName);
@@ -371,6 +373,9 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		errorBorder = BorderFactory.createCompoundBorder(
 				redLine,
 				BorderFactory.createCompoundBorder(emptyBorder, emptyBorder));
+		
+		textFieldBorder = new JTextField().getBorder();
+		textAreaBorder = new JTextArea().getBorder();
 	}
 	
 	private void checkErrorsAndUpdateUI() {
@@ -381,7 +386,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			count++;
 			nameTxt.setBorder(errorBorder);
 		} else {
-			nameTxt.setBorder(new JTextField().getBorder());
+			nameTxt.setBorder(textFieldBorder);
 		}
 		
 		for (int i = 0; i < qBodyTxts.size(); i++) {
@@ -390,7 +395,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				count++;
 				qBodyTxts.get(i).setBorder(errorBorder);
 			} else {
-				qBodyTxts.get(i).setBorder(new JTextArea().getBorder());
+				qBodyTxts.get(i).setBorder(textAreaBorder);
 			}
 			
 			// answers body
@@ -399,7 +404,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 					count++;
 					aTxts.get(i)[j].setBorder(errorBorder);
 				} else {
-					aTxts.get(i)[j].setBorder(new JTextField().getBorder());
+					aTxts.get(i)[j].setBorder(textFieldBorder);
 				}
 			}
 			
@@ -408,7 +413,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				count++;
 				for (int j = 0; j < 4; j++) { correctABtns.get(i)[j].setBackground(Color.RED); correctABtns.get(i)[j].setOpaque(true); }
 			} else {
-				for (int j = 0; j < 4; j++) { correctABtns.get(i)[j].setBorder(new JRadioButton().getBorder()); correctABtns.get(i)[j].setOpaque(false); }
+				for (int j = 0; j < 4; j++) { correctABtns.get(i)[j].setOpaque(false); }
 			}
 		}
 		

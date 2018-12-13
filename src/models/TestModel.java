@@ -159,14 +159,16 @@ public class TestModel extends AbstractTableModel {
 			Collections.sort(l);
 			fireTableDataChanged();
 			
-			// problema: questa funzione viene chiamata 2 volte
-			// ad ogni modifica invece di 1 volta
+			System.out.println("Chiamando updateUpdatedAt");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void updateHasErrors(UUID id, int hasErrors) {
+		// update field only if necessary
+		if (l.get(getTestIndexById(id)).hasErrors() == hasErrors) return;
+		
 		String query = String.format(
 				"UPDATE Test SET hasErrors=%d WHERE id='%s'",
 				hasErrors,
@@ -175,7 +177,6 @@ public class TestModel extends AbstractTableModel {
 		try {
 			dbManager.executeUpdate(query);
 			l.get(getTestIndexById(id)).setHasErrors(hasErrors);
-			updateUpdatedAt(id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

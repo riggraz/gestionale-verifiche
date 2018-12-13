@@ -7,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import entities.Question;
 import models.QuestionModel;
 import models.TestModel;
 
-public abstract class TestForm extends JFrame implements DocumentListener, ActionListener {
+public abstract class TestForm extends JFrame implements DocumentListener, ActionListener, FocusListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -144,6 +147,8 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		
 		nameTxt.getDocument().addDocumentListener(this);
 		descriptionTxt.getDocument().addDocumentListener(this);
+		nameTxt.addFocusListener(this);
+		descriptionTxt.addFocusListener(this);
 		
 		setBorders();
 		
@@ -165,19 +170,25 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-		if (e.getDocument() == nameTxt.getDocument()) {
-			testModel.updateName(testId, nameTxt.getText());
-		} else if (e.getDocument() == descriptionTxt.getDocument()) {
-			testModel.updateDescription(testId, descriptionTxt.getText());
-		}
 		checkErrorsAndUpdateUI();
 	}
-
 	@Override
 	public void removeUpdate(DocumentEvent e) { insertUpdate(e); }
-
 	@Override
 	public void changedUpdate(DocumentEvent e) { insertUpdate(e); }
+	
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (e.getSource() == nameTxt) {
+			testModel.updateName(testId, nameTxt.getText());
+		}
+		
+		if (e.getSource() == descriptionTxt) {
+			testModel.updateDescription(testId, descriptionTxt.getText());
+		}
+	}
+	@Override
+	public void focusGained(FocusEvent e) { }
 
 	public void setTestId(UUID testId) {
 		this.testId = testId;
@@ -269,14 +280,19 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qBodyTxt.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				questionModel.updateBody(question.getId(), qBodyTxt.getText());
-				testModel.updateUpdatedAt(testId);
 				checkErrorsAndUpdateUI();
 			}
 			@Override
 			public void removeUpdate(DocumentEvent e) { insertUpdate(e); }	
 			@Override
 			public void changedUpdate(DocumentEvent e) { insertUpdate(e); }
+		});
+		qBodyTxt.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				questionModel.updateBody(question.getId(), qBodyTxt.getText());
+				testModel.updateUpdatedAt(testId);
+			}
 		});
 		qBodyTxt.addKeyListener(new KeyAdapter() {
             @Override
@@ -303,6 +319,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				public void actionPerformed(ActionEvent e) {
 					questionModel.updateCorrectAnswer(question.getId(), j);
 					checkErrorsAndUpdateUI();
+					qAndAPnl.repaint();
 				}
 			});
 			correctAnswersGroup.add(correctAnswers[i]);
@@ -322,13 +339,19 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			answers[i].getDocument().addDocumentListener(new DocumentListener() {
 				@Override
 				public void insertUpdate(DocumentEvent e) {
-					questionModel.updateAnswerBody(answer.getId(), currentAnswerTxt.getText());
 					checkErrorsAndUpdateUI();
 				}	
 				@Override
 				public void removeUpdate(DocumentEvent e) {	insertUpdate(e); }
 				@Override
 				public void changedUpdate(DocumentEvent e) { insertUpdate(e); }
+			});
+			answers[i].addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					questionModel.updateAnswerBody(answer.getId(), currentAnswerTxt.getText());
+					testModel.updateUpdatedAt(testId);
+				}
 			});
 			
 			aPnls[i].add(correctAnswers[i]);
@@ -379,6 +402,8 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 	}
 	
 	private void checkErrorsAndUpdateUI() {
+		System.out.println("checkErrorsAndUpdateUI()");
+		
 		int count = 0;
 		
 		// test name
@@ -417,8 +442,8 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			}
 		}
 		
-		qAndAMainPnl.revalidate();
-		qAndAMainPnl.repaint();
+//		qAndAMainPnl.revalidate();
+//		qAndAMainPnl.repaint();
 		
 		errorsCountLbl.setText(Integer.toString(count) + " errori");
 		

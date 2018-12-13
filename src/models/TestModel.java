@@ -158,8 +158,6 @@ public class TestModel extends AbstractTableModel {
 			
 			Collections.sort(l);
 			fireTableDataChanged();
-			
-			System.out.println("Chiamando updateUpdatedAt");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

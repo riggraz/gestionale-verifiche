@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.UUID;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import models.TestModel;
+import print.PdfTest;
 import utils.DBManager;
 import views.manage_test.test_forms.EditTestForm;
 import views.manage_test.test_forms.InsertTestForm;
@@ -38,8 +40,11 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	
 	JPanel testManagementPnl;
 	JButton editTestBtn;
-	JButton printTestBtn;
 	JButton deleteTestBtn;
+	JButton saveTestBtn;
+	JButton printTestBtn;
+	
+	PdfTest pdfTest;
 	
 	public ManageTest(DBManager dbManager) {
 		this.dbManager = dbManager;
@@ -78,21 +83,29 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		editTestBtn.setEnabled(false);
 		editTestBtn.addActionListener(this);
 		
-		printTestBtn = new JButton("Stampa verifica");
-		printTestBtn.setMaximumSize(new Dimension(250, 35));
-		printTestBtn.setEnabled(false);
-		printTestBtn.addActionListener(this);
 		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
 		deleteTestBtn.setMaximumSize(new Dimension(250, 35));
 		deleteTestBtn.setEnabled(false);
 		deleteTestBtn.addActionListener(this);
 		
+		saveTestBtn = new JButton("Salva verifica");
+		saveTestBtn.setMaximumSize(new Dimension(250, 35));
+		saveTestBtn.setEnabled(false);
+		saveTestBtn.addActionListener(this);
+		
+		printTestBtn = new JButton("Stampa verifica");
+		printTestBtn.setMaximumSize(new Dimension(250, 35));
+		printTestBtn.setEnabled(false);
+		printTestBtn.addActionListener(this);
+		
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
 		testManagementPnl.add(editTestBtn);
-		testManagementPnl.add(printTestBtn);
 		testManagementPnl.add(deleteTestBtn);
+		testManagementPnl.add (Box.createRigidArea(new Dimension (0,40)));
+		testManagementPnl.add(printTestBtn);
+		testManagementPnl.add(saveTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
 		add(tableScrollPane, BorderLayout.CENTER);
@@ -117,13 +130,13 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			if (hasErrors == 1) {
 				String testName = (String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1);
 				dialogResult = JOptionPane.showConfirmDialog(this,
-						"La verifica '" + testName + "' non è stata compilata correttamente.\n"
+						"La verifica '" + testName + "' non e' stata compilata correttamente.\n"
 						+ "Vuoi comunque procedere alla stampa?", "Sei sicuro?",
 						JOptionPane.YES_NO_OPTION);
 			}
 			
 			if (hasErrors == 0 || dialogResult == JOptionPane.YES_OPTION) {
-				System.out.println("Procedo alla stampa");
+				pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
 			} else {
 				System.out.println("Niente stampa");
 			}
@@ -135,6 +148,9 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			if (dialogResult == JOptionPane.YES_OPTION) {
 				testModel.deleteRows(testsTable.getSelectedRows());
 			}
+		}else if(e.getSource() == saveTestBtn) {
+			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
+			pdfTest.save();
 		}
 	}
 
@@ -146,6 +162,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
 		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 		printTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
+		saveTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
 }

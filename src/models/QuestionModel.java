@@ -36,7 +36,7 @@ public class QuestionModel {
 						"testId VARCHAR(50) REFERENCES Test(id) ON DELETE CASCADE ON UPDATE CASCADE," +
 						"correctAnswer INTEGER)");
 			} catch (SQLException e1) {
-				System.err.println("***Si è verificato un errore nella creazione della tabella Question***");
+				System.err.println("***Si e' verificato un errore nella creazione della tabella Question***");
 				e1.printStackTrace();
 			}
 		}

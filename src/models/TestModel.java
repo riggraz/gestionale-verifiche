@@ -47,7 +47,7 @@ public class TestModel extends AbstractTableModel {
 						"updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
 						"hasErrors INTEGER DEFAULT 1 NOT NULL)");
 			} catch (SQLException e1) {
-				System.err.println("***Si Ã¨ verificato un errore nella creazione della tabella Test***");
+				System.err.println("***Si e'¨ verificato un errore nella creazione della tabella Test***");
 				e1.printStackTrace();
 			}
 		}

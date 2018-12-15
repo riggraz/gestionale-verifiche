@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.JFileChooser;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -29,14 +31,22 @@ public class PdfTest {
 	private QuestionModel questionModel;
 	private AnswerModel answerModel;
 	
+	private String nameTest;
 	
 	private List<Question> lsQuestion;
 	private List<Answer> lsAnswerTemp;
 	private List<Answer> lsAnswer;
 	private List<String> dividedQuestion;
 	
-	public PdfTest(DBManager dbManager, UUID idQuestion) {
+	private PagePosition posPag;
+	private PageProperty pagProp;
+	private PDPageContentStream contentStream;
+	
+	private JFileChooser fileChooser;
+	
+	public PdfTest(DBManager dbManager, UUID idQuestion, String nameTest) {
 		
+		this.nameTest = nameTest;
 		questionModel = new QuestionModel(dbManager);
 		answerModel = new AnswerModel(dbManager);
 		
@@ -48,6 +58,10 @@ public class PdfTest {
 		lsAnswerTemp = new ArrayList<Answer>();
 		lsAnswer = new ArrayList<Answer>();
 		
+		dividedQuestion = new ArrayList<String>();
+		
+		contentStream = null;
+		
 		for(int i =0;i<questionModel.getItemsCount();i++) {
 			Question questionTemp = lsQuestion.get(i);
 			lsAnswerTemp = answerModel.loadByQuestionId(questionTemp.getId());
@@ -56,13 +70,15 @@ public class PdfTest {
 				lsAnswer.add(lsAnswerTemp.get(ind));
 			}
 			
-		}
-		dividedQuestion = new ArrayList<String>();
-		PagePosition posPag;
-		PageProperty pagProp;
-		PDPageContentStream contentStream = null;
+		}			    		 
+
+		createDocument();
 		
-			
+	}
+	
+	private void createDocument() {
+						
+		
 		document = new PDDocument();   
 		      
 	    //Retrieving the pages of the document 
@@ -96,7 +112,7 @@ public class PdfTest {
 	       	
 	       	
 	  		posPag.getContentStream().setFont(PDType1Font.TIMES_BOLD, 15);
- 			posPag.getContentStream().showText(" Nome Verifica" );
+ 			posPag.getContentStream().showText(" " + nameTest );
 	   		posPag.getContentStream().newLineAtOffset(0, -pagProp.getLeading());
 	   		posPag.getContentStream().newLineAtOffset(0, -pagProp.getLeading());
 	   		posPag.setLine(posPag.getLine() +4);
@@ -114,9 +130,6 @@ public class PdfTest {
 				// TODO Auto-generated catch block
 				System.err.println("Errore nella scrittura del file");
 			} 
-			    		 
-
-		
 	}
 	
 	public void print() {
@@ -131,11 +144,17 @@ public class PdfTest {
 	}
 	
 	public void save() {
-		try {
-			document.save("C:\\Users\\Nicolò\\Desktop\\my_doc1.pdf") ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Errore nel salvataggio file");
+		
+		fileChooser = new JFileChooser();
+		
+		if((fileChooser.showSaveDialog(null)) == JFileChooser.APPROVE_OPTION) {
+			try {
+				System.out.println();
+				document.save(fileChooser.getCurrentDirectory() + "/" + fileChooser.getSelectedFile().getName() + ".pdf") ;
+			} catch (IOException e) {
+//			 	TODO Auto-generated catch block
+				System.err.println("Errore nel salvataggio file");
+			}
 		}
 		
    	    try {

@@ -79,25 +79,17 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		});
 		
 		editTestBtn = new JButton("Modifica verifica");
-		editTestBtn.setMaximumSize(new Dimension(250, 35));
-		editTestBtn.setEnabled(false);
-		editTestBtn.addActionListener(this);
+		setSettingBtn(editTestBtn);
 		
 		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
-		deleteTestBtn.setMaximumSize(new Dimension(250, 35));
-		deleteTestBtn.setEnabled(false);
-		deleteTestBtn.addActionListener(this);
+		setSettingBtn(deleteTestBtn);
 		
 		saveTestBtn = new JButton("Salva verifica");
-		saveTestBtn.setMaximumSize(new Dimension(250, 35));
-		saveTestBtn.setEnabled(false);
-		saveTestBtn.addActionListener(this);
+		setSettingBtn(saveTestBtn);
 		
 		printTestBtn = new JButton("Stampa verifica");
-		printTestBtn.setMaximumSize(new Dimension(250, 35));
-		printTestBtn.setEnabled(false);
-		printTestBtn.addActionListener(this);
+		setSettingBtn(printTestBtn);
 		
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
@@ -136,7 +128,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			}
 			
 			if (hasErrors == 0 || dialogResult == JOptionPane.YES_OPTION) {
-				pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
+				pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
 			} else {
 				System.out.println("Niente stampa");
 			}
@@ -149,7 +141,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 				testModel.deleteRows(testsTable.getSelectedRows());
 			}
 		}else if(e.getSource() == saveTestBtn) {
-			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
+			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
 			pdfTest.save();
 		}
 	}
@@ -165,4 +157,9 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		saveTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
+	private void setSettingBtn(JButton btn) {
+		btn.setMaximumSize(new Dimension(250, 35));
+		btn.setEnabled(false);
+		btn.addActionListener(this);
+	}
 }

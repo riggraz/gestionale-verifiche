@@ -134,6 +134,7 @@ public class PrintUtils {
 		    int lastSpace = -1;
 		    while (text.length() > 0)
 		    {
+		        text = text.replace("\n", " ").replace("\r", " ");
 		        int spaceIndex = text.indexOf(' ', lastSpace + 1);
 		        if (spaceIndex < 0)
 		            spaceIndex = text.length();

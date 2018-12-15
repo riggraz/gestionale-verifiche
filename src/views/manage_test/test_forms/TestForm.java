@@ -239,6 +239,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qAndAPnl.setMinimumSize(new Dimension(600, 300));
 		qAndAPnl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		qAndAPnl.setBorder(new CompoundBorder(new EmptyBorder(24, 16, 24, 16), null));
+		qBodyTxt.setLineWrap(true);
 		
 		// informations about Question
 		qNumberLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.BOLD, 18));

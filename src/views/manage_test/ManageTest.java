@@ -20,8 +20,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import models.TestModel;
-import print.PdfTest;
 import utils.DBManager;
+import utils.print.PdfTest;
 import views.manage_test.test_forms.EditTestForm;
 import views.manage_test.test_forms.InsertTestForm;
 
@@ -95,9 +95,9 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
 		testManagementPnl.add(editTestBtn);
 		testManagementPnl.add(deleteTestBtn);
-		testManagementPnl.add (Box.createRigidArea(new Dimension (0,40)));
-		testManagementPnl.add(printTestBtn);
+		testManagementPnl.add (Box.createRigidArea(new Dimension (0, 10)));
 		testManagementPnl.add(saveTestBtn);
+		testManagementPnl.add(printTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
 		add(tableScrollPane, BorderLayout.CENTER);
@@ -115,6 +115,18 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 				(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
+		} else if (e.getSource() == deleteTestBtn) {
+			int dialogResult = JOptionPane.showConfirmDialog(this,
+					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +
+					" verifiche selezionate?", "Sei sicuro?",
+					JOptionPane.YES_NO_OPTION);
+			
+			if (dialogResult == JOptionPane.YES_OPTION) {
+				testModel.deleteRows(testsTable.getSelectedRows());
+			}
+		} else if (e.getSource() == saveTestBtn) {
+			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
+			pdfTest.save();
 		} else if (e.getSource() == printTestBtn) {
 			int dialogResult = 0;
 			
@@ -132,17 +144,6 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			} else {
 				System.out.println("Niente stampa");
 			}
-		} else if (e.getSource() == deleteTestBtn) {
-			int dialogResult = JOptionPane.showConfirmDialog(this,
-					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +
-					" verifiche selezionate?", "Sei sicuro?",
-					JOptionPane.YES_NO_OPTION);
-			if (dialogResult == JOptionPane.YES_OPTION) {
-				testModel.deleteRows(testsTable.getSelectedRows());
-			}
-		}else if(e.getSource() == saveTestBtn) {
-			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
-			pdfTest.save();
 		}
 	}
 

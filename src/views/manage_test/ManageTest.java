@@ -41,10 +41,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	JPanel testManagementPnl;
 	JButton editTestBtn;
 	JButton deleteTestBtn;
-	JButton saveTestBtn;
-	JButton printTestBtn;
-	
-	PdfTest pdfTest;
+	JButton previewTestBtn;
 	
 	public ManageTest(DBManager dbManager) {
 		this.dbManager = dbManager;
@@ -81,23 +78,18 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		editTestBtn = new JButton("Modifica verifica");
 		setSettingBtn(editTestBtn);
 		
-		
 		deleteTestBtn = new JButton("Elimina verifiche (0)");
 		setSettingBtn(deleteTestBtn);
 		
-		saveTestBtn = new JButton("Salva verifica");
-		setSettingBtn(saveTestBtn);
-		
-		printTestBtn = new JButton("Stampa verifica");
-		setSettingBtn(printTestBtn);
+		previewTestBtn = new JButton("Anteprima verifica");
+		setSettingBtn(previewTestBtn);
 		
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
 		testManagementPnl.add(editTestBtn);
 		testManagementPnl.add(deleteTestBtn);
 		testManagementPnl.add (Box.createRigidArea(new Dimension (0, 10)));
-		testManagementPnl.add(saveTestBtn);
-		testManagementPnl.add(printTestBtn);
+		testManagementPnl.add(previewTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
 		add(tableScrollPane, BorderLayout.CENTER);
@@ -107,15 +99,20 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == insertTestBtn) {
+			
 			new InsertTestForm(dbManager, testModel);
+			
 		} else if (e.getSource() == editTestBtn) {
+			
 			new EditTestForm(
 				dbManager,
 				testModel,
 				(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1),
 				(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(),  2));
+			
 		} else if (e.getSource() == deleteTestBtn) {
+			
 			int dialogResult = JOptionPane.showConfirmDialog(this,
 					"Vuoi davvero eliminare le " + testsTable.getSelectedRowCount() +
 					" verifiche selezionate?", "Sei sicuro?",
@@ -124,10 +121,9 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			if (dialogResult == JOptionPane.YES_OPTION) {
 				testModel.deleteRows(testsTable.getSelectedRows());
 			}
-		} else if (e.getSource() == saveTestBtn) {
-			pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
-			pdfTest.save();
-		} else if (e.getSource() == printTestBtn) {
+			
+		} else if (e.getSource() == previewTestBtn) {
+			
 			int dialogResult = 0;
 			
 			int hasErrors = (int) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 5);
@@ -140,10 +136,13 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			}
 			
 			if (hasErrors == 0 || dialogResult == JOptionPane.YES_OPTION) {
-				pdfTest = new PdfTest(dbManager,(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
-			} else {
-				System.out.println("Niente stampa");
+				PdfTest pdfTest = new PdfTest(
+						dbManager,
+						(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
+						(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
+				new TestPreview(pdfTest);
 			}
+			
 		}
 	}
 
@@ -154,8 +153,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		deleteTestBtn.setText("Elimina verifiche (" + testsTable.getSelectedRowCount() + ")");
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
 		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
-		printTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
-		saveTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
+		previewTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
 	private void setSettingBtn(JButton btn) {

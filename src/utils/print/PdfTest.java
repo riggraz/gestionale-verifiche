@@ -4,6 +4,7 @@ import static utils.print.PrintUtils.divideLine;
 import static utils.print.PrintUtils.printQeA;
 import static utils.print.PrintUtils.printWithDialogAndAttributes;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import entities.Answer;
 import entities.Question;
@@ -49,7 +52,7 @@ public class PdfTest {
 		questionModel = new QuestionModel(dbManager);
 		answerModel = new AnswerModel(dbManager);
 		
-		questionModel.loadByTestId(idQuestion);			
+		questionModel.loadByTestId(idQuestion);
 		
 		lsQuestion = new ArrayList<Question>();
 		lsQuestion = questionModel.getQuestions();
@@ -68,7 +71,7 @@ public class PdfTest {
 			for(int ind = 0; ind < 4; ind++) {
 				lsAnswer.add(lsAnswerTemp.get(ind));
 			}
-		}			    		 
+		}
 
 		createDocument();
 	}
@@ -113,10 +116,31 @@ public class PdfTest {
   	        //Ending the content stream
 	   	    posPag.getContentStream().endText();
 	   	    posPag.getContentStream().close();
+	   	    
+	   	    System.out.println("Documento creato (" + document.getNumberOfPages());
 		    
 		} catch (IOException e) {
 			System.err.println("Errore nella creazione del file");
 		}
+	}
+	
+	public List<String> getPreviewImages() {
+		List<String> images = new ArrayList<String>();
+		PDFRenderer pdfRenderer = new PDFRenderer(document);
+		
+		for (int page = 0; page < document.getNumberOfPages(); page++) {
+			BufferedImage bufferedImage;
+			String imageName = "pdf-" + (page+1) + ".png";
+			try {
+				bufferedImage = pdfRenderer.renderImage(page);
+				ImageIOUtil.writeImage(bufferedImage, imageName, 300);
+				images.add(imageName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return images;
 	}
 	
 	public void print() {
@@ -141,7 +165,7 @@ public class PdfTest {
    	    close();
 	}
 	
-	private void close() {
+	public void close() {
 		try {
 			document.close();
 		} catch (IOException e) {

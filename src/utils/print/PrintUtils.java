@@ -9,7 +9,7 @@ import java.util.List;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.PageRanges;
+import javax.print.attribute.standard.MediaSizeName;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -104,8 +104,9 @@ public class PrintUtils {
 		job.setPageable(new PDFPageable(document));
 		
 		PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
-		attr.add(new PageRanges(1, 1)); // pages 1 to 1
 		attr.add(new Copies(1));
+		attr.add(MediaSizeName.ISO_A4);
+		
 		System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
 		
 	    if (job.printDialog(attr)) {

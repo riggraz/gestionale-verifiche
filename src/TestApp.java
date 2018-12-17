@@ -6,7 +6,7 @@ public class TestApp {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new GestionaleVerifiche();	
+				new GestionaleVerifiche();
 			}
 		});
 	}

@@ -146,7 +146,6 @@ public class PdfTest {
 	public void print() {
 		printWithDialogAndAttributes(document);
 		
-   	    close();
 	}
 	
 	public void save() {
@@ -162,11 +161,11 @@ public class PdfTest {
 			}
 		}
 		
-   	    close();
 	}
 	
 	public void close() {
 		try {
+			System.out.println("Doc chiuso");
 			document.close();
 		} catch (IOException e) {
 			System.err.println("Errore nella chiusura del file");

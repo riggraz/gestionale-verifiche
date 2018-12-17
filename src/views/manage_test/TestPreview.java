@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +86,14 @@ public class TestPreview extends JFrame implements ActionListener {
 		add(nOfPagesLbl, BorderLayout.SOUTH);
 		
 		setSize(840, 560);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		WindowListener exitListener = new WindowAdapter() {			
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		    	pdfTest.close();	
+		    	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		    }
+		};		
+		this.addWindowListener(exitListener);
 		setVisible(true);
 	}
 

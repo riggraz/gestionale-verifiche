@@ -165,7 +165,6 @@ public class PdfTest {
 	
 	public void close() {
 		try {
-			System.out.println("Doc chiuso");
 			document.close();
 		} catch (IOException e) {
 			System.err.println("Errore nella chiusura del file");

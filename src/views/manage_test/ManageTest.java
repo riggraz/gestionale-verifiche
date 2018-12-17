@@ -140,7 +140,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 						dbManager,
 						(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
 						(String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
-				new TestPreview(pdfTest);
+				new TestPreview(pdfTest,dbManager);
 			}
 			
 		}

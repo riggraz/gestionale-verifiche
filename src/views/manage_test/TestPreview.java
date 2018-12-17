@@ -16,10 +16,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
+import entities.SchoolClass;
+import models.JListSchoolClassModel;
+import utils.DBManager;
 import utils.print.ImagePanel;
 import utils.print.PdfTest;
 
@@ -31,19 +36,39 @@ public class TestPreview extends JFrame implements ActionListener {
 	
 	private List<ImagePanel> testPages;
 	
+	private JListSchoolClassModel ClassModelJls;
+	
+	private JPanel listClassPnl;
+	private JList<SchoolClass> listClassJls;
+	private JScrollPane classScroller;
 	private JPanel previewPnl;
 	private JLabel nOfPagesLbl;
 	private JPanel savePrintPnl;
 	private JButton saveBtn;
 	private JButton printBtn;
 	
-	public TestPreview(PdfTest pdfTest) {
+	public TestPreview(PdfTest pdfTest, DBManager dbManager) {
 		super("Anteprima verifica");
 		
 		this.pdfTest = pdfTest;
 		
 		setLayout(new BorderLayout(24, 24));
 		getRootPane().setBorder(new EmptyBorder(16, 16, 16, 16));
+		
+		listClassPnl = new JPanel();
+		
+		ClassModelJls = new JListSchoolClassModel(dbManager);
+		listClassJls = new JList<SchoolClass>();		
+		listClassJls.setModel(ClassModelJls);
+		listClassJls.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		listClassJls.setVisibleRowCount(-1);
+		listClassJls.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		
+		classScroller = new JScrollPane(listClassJls);
+		classScroller.setPreferredSize(new Dimension(170, 35));
+		
+		listClassPnl.add(new JLabel("Seleziona le classi per cui vuoi stampare: "));
+		listClassPnl.add(classScroller);
 		
 		testPages = new ArrayList<ImagePanel>();
 		
@@ -81,6 +106,7 @@ public class TestPreview extends JFrame implements ActionListener {
 			previewPnl.add(icon);
 		}
 		
+		add(listClassPnl, BorderLayout.NORTH);
 		add(previewScrollPane, BorderLayout.CENTER);
 		add(savePrintPnl, BorderLayout.EAST);
 		add(nOfPagesLbl, BorderLayout.SOUTH);

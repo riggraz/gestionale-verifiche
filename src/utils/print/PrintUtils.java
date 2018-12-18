@@ -99,12 +99,12 @@ public class PrintUtils {
 	    posPag.setLine(0);
 	}
 	
-	public static void printWithDialogAndAttributes(PDDocument document) {
+	public static void printWithDialogAndAttributes(PDDocument document, int copiesToPrint) {
 		PrinterJob job = PrinterJob.getPrinterJob();
 		job.setPageable(new PDFPageable(document));
 		
 		PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
-		attr.add(new Copies(1));
+		attr.add(new Copies(copiesToPrint));
 		attr.add(MediaSizeName.ISO_A4);
 		
 		System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");

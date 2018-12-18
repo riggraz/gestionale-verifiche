@@ -3,19 +3,14 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import javax.swing.DefaultComboBoxModel;
 
 import entities.SchoolClass;
 import utils.DBManager;
 import utils.SQLUtils;
 
-public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
-
-	private static final long serialVersionUID = 1L;
+public class SchoolClassModel {
 	
 	private DBManager dbManager;
 	private List<SchoolClass> l;
@@ -56,66 +51,12 @@ public class SchoolClassModel extends DefaultComboBoxModel<SchoolClass> {
 		}
 	}
 	
-	public void insertItem(String name) throws SQLException {
-		SchoolClass sc = new SchoolClass(name);
-		String query = String.format(
-				"INSERT INTO SchoolClass (id, name) VALUES ('%s', '%s')",
-				sc.getId().toString(),
-				SQLUtils.escapeString(sc.getName()));
-				
-		try {
-			dbManager.executeUpdate(query);
-			l.add(sc);
-			Collections.sort(l);
-			fireContentsChanged(this, 0, l.size()-1);
-			setSelectedItem(sc);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		}
+	public DBManager getDBManager() {
+		return dbManager;
 	}
 	
-	public void updateItem(int index, String name) throws SQLException {
-		String query = String.format(
-				"UPDATE SchoolClass SET name='%s' WHERE id='%s'",
-				SQLUtils.escapeString(name),
-				l.get(index).getId());
-		
-		try {
-			dbManager.executeUpdate(query);
-			l.get(index).setName(name);
-			Collections.sort(l);
-			fireContentsChanged(this, 0, l.size()-1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		}
-	}
-	
-	public void deleteItem(int index) {
-		String query = String.format(
-				"DELETE FROM SchoolClass WHERE id='%s'",
-				l.get(index).getId());
-		
-		try {
-			dbManager.executeUpdate(query);
-			l.remove(index);
-			Collections.sort(l);
-			fireContentsChanged(this, 0, l.size()-1);
-			if (l.size() > 0) setSelectedItem(l.get(0));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public int getSize() {
-		return l.size();
-	}
-
-	@Override
-	public SchoolClass getElementAt(int index) {
-		return l.get(index);
+	public List<SchoolClass> getL() {
+		return l;
 	}
 
 }

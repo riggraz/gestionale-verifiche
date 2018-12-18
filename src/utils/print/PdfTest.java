@@ -4,6 +4,7 @@ import static utils.print.PrintUtils.divideLine;
 import static utils.print.PrintUtils.printQeA;
 import static utils.print.PrintUtils.printWithDialogAndAttributes;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,8 +117,6 @@ public class PdfTest {
   	        //Ending the content stream
 	   	    posPag.getContentStream().endText();
 	   	    posPag.getContentStream().close();
-	   	    
-	   	    System.out.println("Documento creato (" + document.getNumberOfPages());
 		    
 		} catch (IOException e) {
 			System.err.println("Errore nella creazione del file");
@@ -143,19 +142,19 @@ public class PdfTest {
 		return images;
 	}
 	
-	public void print() {
-		printWithDialogAndAttributes(document);
-		
+	public void print(int copiesToPrint) {
+		printWithDialogAndAttributes(document, copiesToPrint);
 	}
 	
-	public void save() {
+	public void save(boolean openAfterSave) {
 		fileChooser = new JFileChooser();
 		
 		if ((fileChooser.showSaveDialog(null)) == JFileChooser.APPROVE_OPTION) {
 			try {
 				String filePath = fileChooser.getCurrentDirectory() + "/" + fileChooser.getSelectedFile().getName() + ".pdf";
 				document.save(filePath) ;
-//				Desktop.getDesktop().open(new java.io.File(filePath).getParentFile());
+				
+				if (openAfterSave) Desktop.getDesktop().open(new java.io.File(filePath));
 			} catch (IOException e) {
 				System.err.println("Errore nel salvataggio file");
 			}

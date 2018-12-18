@@ -5,15 +5,15 @@ import java.sql.SQLException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import models.SchoolClassModel;
+import models.SchoolClassComboBoxModel;
 
 public class InsertSchoolClassForm extends SchoolClassForm {
 
 	private static final long serialVersionUID = 1L;
 	
-	private SchoolClassModel schoolClassModel;
+	private SchoolClassComboBoxModel schoolClassModel;
 	
-	public InsertSchoolClassForm(JComponent parent, SchoolClassModel schoolClassModel) {
+	public InsertSchoolClassForm(JComponent parent, SchoolClassComboBoxModel schoolClassModel) {
 		super(parent, "Aggiungi classe");
 		
 		this.schoolClassModel = schoolClassModel;

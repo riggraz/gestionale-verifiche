@@ -16,7 +16,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import entities.SchoolClass;
-import models.SchoolClassModel;
+import models.SchoolClassComboBoxModel;
 import utils.DBManager;
 import views.manage_school_class.school_class_forms.EditSchoolClassForm;
 import views.manage_school_class.school_class_forms.InsertSchoolClassForm;
@@ -25,7 +25,7 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 
 	private static final long serialVersionUID = 1L;
 	
-	SchoolClassModel schoolClassModel;
+	SchoolClassComboBoxModel schoolClassComboBoxModel;
 	
 	JPanel schoolClassManagementPnl;
 	JComboBox<SchoolClass> schoolClassCmbBox;
@@ -38,10 +38,10 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 		setBorder(new EmptyBorder(16, 16, 16, 16));
 		
 		schoolClassCmbBox = new JComboBox<SchoolClass>();
-		schoolClassModel = new SchoolClassModel(dbManager);
-		schoolClassCmbBox.setModel(schoolClassModel);
+		schoolClassComboBoxModel = new SchoolClassComboBoxModel(dbManager);
+		schoolClassCmbBox.setModel(schoolClassComboBoxModel);
 		schoolClassCmbBox.addItemListener(this);
-		schoolClassModel.addListDataListener(this);
+		schoolClassComboBoxModel.addListDataListener(this);
 		
 		insertSchoolClassBtn = new JButton("Nuova classe");
 		insertSchoolClassBtn.setPreferredSize(new Dimension(150, 35));
@@ -75,11 +75,11 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == insertSchoolClassBtn) {
-			new InsertSchoolClassForm(this, schoolClassModel);
+			new InsertSchoolClassForm(this, schoolClassComboBoxModel);
 		}
 		
 		if (e.getSource() == editSchoolClassBtn) {
-			new EditSchoolClassForm(this, schoolClassModel, schoolClassCmbBox.getSelectedIndex());
+			new EditSchoolClassForm(this, schoolClassComboBoxModel, schoolClassCmbBox.getSelectedIndex());
 		}
 		
 		if (e.getSource() == deleteSchoolClassBtn) {
@@ -89,7 +89,7 @@ public class ManageSchoolClass extends JPanel implements ActionListener, ItemLis
 					"?\nVerranno eliminati anche tutti i suoi studenti.", "Sei sicuro?",
 					JOptionPane.YES_NO_OPTION);
 			if (dialogResult == JOptionPane.YES_OPTION) {
-				schoolClassModel.deleteItem(schoolClassCmbBox.getSelectedIndex());
+				schoolClassComboBoxModel.deleteItem(schoolClassCmbBox.getSelectedIndex());
 			}
 		}
 	}

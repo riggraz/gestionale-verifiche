@@ -5,15 +5,15 @@ import java.sql.SQLException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import models.SchoolClassModel;
+import models.SchoolClassComboBoxModel;
 
 public class EditSchoolClassForm extends SchoolClassForm {
 	private static final long serialVersionUID = 1L;
 	
-	private SchoolClassModel schoolClassModel;
+	private SchoolClassComboBoxModel schoolClassModel;
 	private int index;
 	
-	public EditSchoolClassForm(JComponent parent, SchoolClassModel schoolClassModel, int index) {
+	public EditSchoolClassForm(JComponent parent, SchoolClassComboBoxModel schoolClassModel, int index) {
 		super(parent, "Modifica classe");
 		
 		this.schoolClassModel = schoolClassModel;

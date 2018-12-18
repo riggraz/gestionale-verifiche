@@ -11,64 +11,59 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import entities.SchoolClass;
-import models.JListSchoolClassModel;
+import models.SchoolClassListModel;
 import utils.DBManager;
 import utils.print.ImagePanel;
 import utils.print.PdfTest;
 
-public class TestPreview extends JFrame implements ActionListener {
+public class TestPreview extends JFrame implements ActionListener, ListSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 	
 	private PdfTest pdfTest;
-	
 	private List<ImagePanel> testPages;
+	private int copiesToPrint;
 	
-	private JListSchoolClassModel ClassModelJls;
+	private SchoolClassListModel schoolClassListModel;
+	private JPanel schoolClassPnl;
+	private JLabel schoolClassLbl;
+	private JList<SchoolClass> schoolClassList;
+	private JScrollPane schoolClassScrollPane;
+	private JLabel copiesToPrintLbl;
 	
-	private JPanel listClassPnl;
-	private JList<SchoolClass> listClassJls;
-	private JScrollPane classScroller;
 	private JPanel previewPnl;
+	
 	private JLabel nOfPagesLbl;
+	
 	private JPanel savePrintPnl;
 	private JButton saveBtn;
+	private JCheckBox openAfterSaveCheckBox;
 	private JButton printBtn;
 	
 	public TestPreview(PdfTest pdfTest, DBManager dbManager) {
 		super("Anteprima verifica");
 		
 		this.pdfTest = pdfTest;
+		this.copiesToPrint = 0;
 		
 		setLayout(new BorderLayout(24, 24));
 		getRootPane().setBorder(new EmptyBorder(16, 16, 16, 16));
-		
-		listClassPnl = new JPanel();
-		
-		ClassModelJls = new JListSchoolClassModel(dbManager);
-		listClassJls = new JList<SchoolClass>();		
-		listClassJls.setModel(ClassModelJls);
-		listClassJls.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		listClassJls.setVisibleRowCount(-1);
-		listClassJls.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		
-		classScroller = new JScrollPane(listClassJls);
-		classScroller.setPreferredSize(new Dimension(170, 35));
-		
-		listClassPnl.add(new JLabel("Seleziona le classi per cui vuoi stampare: "));
-		listClassPnl.add(classScroller);
 		
 		testPages = new ArrayList<ImagePanel>();
 		
@@ -85,12 +80,41 @@ public class TestPreview extends JFrame implements ActionListener {
 		saveBtn.setMaximumSize(new Dimension(250, 35));
 		saveBtn.addActionListener(this);
 		
+		openAfterSaveCheckBox = new JCheckBox("Apri verifica dopo salvataggio");
+		
 		printBtn = new JButton("Stampa");
 		printBtn.setMaximumSize(new Dimension(250, 35));
 		printBtn.addActionListener(this);
 		
+		schoolClassListModel = new SchoolClassListModel(dbManager);
+		
+		schoolClassPnl = new JPanel();
+		schoolClassPnl.setLayout(new BoxLayout(schoolClassPnl, BoxLayout.Y_AXIS));
+		schoolClassPnl.setMaximumSize(new Dimension(250, 150));
+		schoolClassPnl.setAlignmentX(SwingConstants.CENTER);
+		
+		schoolClassLbl = new JLabel("Per quali classi:");
+		schoolClassLbl.setAlignmentX(CENTER_ALIGNMENT);
+		schoolClassList = new JList<SchoolClass>();
+		schoolClassList.setAlignmentX(CENTER_ALIGNMENT);
+		schoolClassList.setModel(schoolClassListModel);
+		schoolClassList.addListSelectionListener(this);
+		
+		schoolClassScrollPane = new JScrollPane();
+		schoolClassScrollPane.setViewportView(schoolClassList);
+		
+		copiesToPrintLbl = new JLabel("0 copie");
+		copiesToPrintLbl.setAlignmentX(CENTER_ALIGNMENT);
+		
+		schoolClassPnl.add(schoolClassLbl);
+		schoolClassPnl.add(schoolClassScrollPane);
+		schoolClassPnl.add(copiesToPrintLbl);
+		
 		savePrintPnl.add(saveBtn);
+		savePrintPnl.add(openAfterSaveCheckBox);
+		savePrintPnl.add(Box.createRigidArea(new Dimension (0, 20)));
 		savePrintPnl.add(printBtn);
+		savePrintPnl.add(schoolClassPnl);
 		
 		JScrollPane previewScrollPane = new JScrollPane(previewPnl);
 		previewScrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -101,12 +125,11 @@ public class TestPreview extends JFrame implements ActionListener {
 		}
 		
 		for (ImagePanel imagePanel : testPages) {
-			JLabel icon = new JLabel(new ImageIcon(imagePanel.getBufferedImage()));
-			icon.setAlignmentX(CENTER_ALIGNMENT);
-			previewPnl.add(icon);
+			JLabel image = new JLabel(new ImageIcon(imagePanel.getBufferedImage()));
+			image.setAlignmentX(CENTER_ALIGNMENT);
+			previewPnl.add(image);
 		}
 		
-		add(listClassPnl, BorderLayout.NORTH);
 		add(previewScrollPane, BorderLayout.CENTER);
 		add(savePrintPnl, BorderLayout.EAST);
 		add(nOfPagesLbl, BorderLayout.SOUTH);
@@ -126,10 +149,20 @@ public class TestPreview extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == saveBtn) {
-			pdfTest.save();
+			pdfTest.save(openAfterSaveCheckBox.isSelected());
 		} else if (e.getSource() == printBtn) {
-			pdfTest.print();
+			pdfTest.print(copiesToPrint);
 		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		int copiesToPrint = 0;
+		for (SchoolClass selectedSchoolClass : schoolClassList.getSelectedValuesList()) {
+			copiesToPrint += schoolClassListModel.getStudentCountBySchoolClassName(selectedSchoolClass.getName());
+		}
+		copiesToPrintLbl.setText(copiesToPrint + " copie");
+		this.copiesToPrint = copiesToPrint;
 	}
 
 }

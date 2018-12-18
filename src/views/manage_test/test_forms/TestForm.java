@@ -333,7 +333,10 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 				answers[i].addKeyListener(new KeyAdapter() {
 					@Override
 					public void keyPressed(KeyEvent e) {
-						if (e.getKeyChar() == KeyEvent.VK_TAB) dbAddQAndA();
+						if (e.getKeyChar() == KeyEvent.VK_TAB) {
+							if ((JTextField)e.getComponent() != aTxts.get(aTxts.size()-1)[3]) e.getComponent().transferFocus();
+							else dbAddQAndA();
+						}
 					}
 				});
 			}

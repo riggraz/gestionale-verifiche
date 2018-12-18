@@ -1,6 +1,7 @@
 package views.manage_test;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -22,6 +24,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -48,6 +51,8 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 	private JLabel copiesToPrintLbl;
 	
 	private JPanel previewPnl;
+	private Border emptyBorder;
+	private Border lineBorder;
 	
 	private JLabel nOfPagesLbl;
 	
@@ -124,9 +129,12 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 			testPages.add(imagePanel);
 		}
 		
+		emptyBorder = BorderFactory.createEmptyBorder(8, 0, 8, 0);
+		lineBorder = BorderFactory.createLineBorder(Color.BLACK);
 		for (ImagePanel imagePanel : testPages) {
 			JLabel image = new JLabel(new ImageIcon(imagePanel.getBufferedImage()));
 			image.setAlignmentX(CENTER_ALIGNMENT);
+			image.setBorder(BorderFactory.createCompoundBorder(emptyBorder, lineBorder));
 			previewPnl.add(image);
 		}
 		
@@ -134,7 +142,7 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 		add(savePrintPnl, BorderLayout.EAST);
 		add(nOfPagesLbl, BorderLayout.SOUTH);
 		
-		setSize(840, 560);
+		setSize(920, 560);
 		WindowListener exitListener = new WindowAdapter() {			
 		    @Override
 		    public void windowClosing(WindowEvent e) {

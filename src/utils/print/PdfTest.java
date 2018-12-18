@@ -6,6 +6,7 @@ import static utils.print.PrintUtils.printWithDialogAndAttributes;
 
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +142,13 @@ public class PdfTest {
 		}
 		
 		return images;
+	}
+	
+	public void deletePreviewImages() {
+		for (int page = 0; page < document.getNumberOfPages(); page++) {
+			String imageName = "pdf-" + (page+1) + ".png";
+			new File(imageName).delete();
+		}
 	}
 	
 	public void print(int copiesToPrint) {

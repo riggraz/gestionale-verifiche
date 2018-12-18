@@ -22,6 +22,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -249,6 +250,14 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		qDeleteBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int dialogResult = JOptionPane.showConfirmDialog(
+						qAndAPnls.get(question.getNumber()),
+						"Vuoi davvero eliminare la domanda " + question.getNumber() + "?",
+						"Sei sicuro?",
+						JOptionPane.YES_NO_OPTION);
+				
+				if (dialogResult == JOptionPane.NO_OPTION || dialogResult == JOptionPane.CLOSED_OPTION) return;
+				
 				// delete from db
 				questionModel.deleteItem(question.getId());
 				testModel.updateUpdatedAt(testId);

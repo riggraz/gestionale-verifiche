@@ -130,8 +130,8 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 			if (hasErrors == 1) {
 				String testName = (String)testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1);
 				dialogResult = JOptionPane.showConfirmDialog(this,
-						"La verifica '" + testName + "' non e' stata compilata correttamente.\n"
-						+ "Vuoi comunque procedere alla stampa?", "Sei sicuro?",
+						"La verifica '" + testName + "' non e' stata compilata\n"
+						+ "corettamente. Vuoi procedere comunque?", "Sei sicuro?",
 						JOptionPane.YES_NO_OPTION);
 			}
 			

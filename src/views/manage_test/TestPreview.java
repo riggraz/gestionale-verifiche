@@ -146,7 +146,8 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 		WindowListener exitListener = new WindowAdapter() {			
 		    @Override
 		    public void windowClosing(WindowEvent e) {
-		    	pdfTest.close();	
+		    	pdfTest.deletePreviewImages();
+		    	pdfTest.close();
 		    	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		    }
 		};		

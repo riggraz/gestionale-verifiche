@@ -100,6 +100,8 @@ public class PrintUtils {
 	}
 	
 	public static void printWithDialogAndAttributes(PDDocument document, int copiesToPrint) {
+		if (copiesToPrint <= 0) copiesToPrint = 1;
+		
 		PrinterJob job = PrinterJob.getPrinterJob();
 		job.setPageable(new PDFPageable(document));
 		

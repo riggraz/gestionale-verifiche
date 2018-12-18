@@ -38,7 +38,7 @@ public class MassAddStudentForm extends GenericForm {
 				"<html>Scrivi tutti gli studenti che vuoi aggiungere<br />" +
 				"rispettando il seguente formato:<br /><b>nome[spazio]cognome[a capo]</b></html>");
 		
-		studentsTxtArea = new JTextArea(14, 24);
+		studentsTxtArea = new JTextArea(13, 24);
 		JScrollPane studentsTxtAreaScrollPane = new JScrollPane(studentsTxtArea);
 		studentsTxtAreaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		studentsTxtAreaScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);

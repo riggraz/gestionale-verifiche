@@ -149,7 +149,7 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == saveBtn) {
-			pdfTest.save(openAfterSaveCheckBox.isSelected());
+			pdfTest.save(this.getRootPane(), openAfterSaveCheckBox.isSelected());
 		} else if (e.getSource() == printBtn) {
 			pdfTest.print(copiesToPrint);
 		}

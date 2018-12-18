@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -146,10 +147,10 @@ public class PdfTest {
 		printWithDialogAndAttributes(document, copiesToPrint);
 	}
 	
-	public void save(boolean openAfterSave) {
+	public void save(JComponent parent, boolean openAfterSave) {
 		fileChooser = new JFileChooser();
 		
-		if ((fileChooser.showSaveDialog(null)) == JFileChooser.APPROVE_OPTION) {
+		if ((fileChooser.showSaveDialog(parent)) == JFileChooser.APPROVE_OPTION) {
 			try {
 				String filePath = fileChooser.getCurrentDirectory() + "/" + fileChooser.getSelectedFile().getName() + ".pdf";
 				document.save(filePath) ;

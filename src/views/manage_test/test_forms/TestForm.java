@@ -157,7 +157,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		add(bottomPnl, BorderLayout.SOUTH);
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(720, 800);
+        setSize(640, 720);
         setVisible(true);
 	}
 
@@ -235,8 +235,8 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 		
 		qAndAPnl.setLayout(new BoxLayout(qAndAPnl, BoxLayout.Y_AXIS));
 		qAndAPnl.setMaximumSize(new Dimension(800, 300));
-		qAndAPnl.setPreferredSize(new Dimension(700, 300));
-		qAndAPnl.setMinimumSize(new Dimension(600, 300));
+		qAndAPnl.setPreferredSize(new Dimension(600, 300));
+		qAndAPnl.setMinimumSize(new Dimension(500, 300));
 		qAndAPnl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		qAndAPnl.setBorder(new CompoundBorder(new EmptyBorder(24, 16, 24, 16), null));
 		qBodyTxt.setLineWrap(true);

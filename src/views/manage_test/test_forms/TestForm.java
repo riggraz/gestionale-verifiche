@@ -252,7 +252,7 @@ public abstract class TestForm extends JFrame implements DocumentListener, Actio
 			public void actionPerformed(ActionEvent e) {
 				int dialogResult = JOptionPane.showConfirmDialog(
 						qAndAPnls.get(question.getNumber()),
-						"Vuoi davvero eliminare la domanda " + question.getNumber() + "?",
+						"Vuoi davvero eliminare la domanda " + (question.getNumber()+1) + "?",
 						"Sei sicuro?",
 						JOptionPane.YES_NO_OPTION);
 				

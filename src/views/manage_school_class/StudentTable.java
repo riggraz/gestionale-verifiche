@@ -73,7 +73,7 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 		studentManagementPnl.add(deleteStudentBtn);
 		
 		add(tableScrollPane, BorderLayout.CENTER);
-		add(studentManagementPnl, BorderLayout.EAST);
+		add(studentManagementPnl, BorderLayout.WEST);
 	}
 	
 	public void populateTable(String schoolClassName) {

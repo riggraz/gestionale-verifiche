@@ -93,7 +93,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		
 		add(insertTestBtn, BorderLayout.NORTH);
 		add(tableScrollPane, BorderLayout.CENTER);
-		add(testManagementPnl, BorderLayout.EAST);
+		add(testManagementPnl, BorderLayout.WEST);
 	}
 
 	@Override

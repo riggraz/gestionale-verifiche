@@ -42,6 +42,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 	JButton editTestBtn;
 	JButton deleteTestBtn;
 	JButton previewTestBtn;
+	JButton correctTestBtn;
 	
 	public ManageTest(DBManager dbManager) {
 		this.dbManager = dbManager;
@@ -84,12 +85,17 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		previewTestBtn = new JButton("Anteprima verifica");
 		setSettingBtn(previewTestBtn);
 		
+		correctTestBtn = new JButton("Correggi");
+		setSettingBtn(correctTestBtn);
+		
 		testManagementPnl = new JPanel();
 		testManagementPnl.setLayout(new BoxLayout(testManagementPnl, BoxLayout.Y_AXIS));
 		testManagementPnl.add(editTestBtn);
 		testManagementPnl.add(deleteTestBtn);
 		testManagementPnl.add (Box.createRigidArea(new Dimension (0, 10)));
 		testManagementPnl.add(previewTestBtn);
+		testManagementPnl.add (Box.createRigidArea(new Dimension (0, 10)));
+		testManagementPnl.add(correctTestBtn);
 		
 		add(insertTestBtn, BorderLayout.NORTH);
 		add(tableScrollPane, BorderLayout.CENTER);
@@ -143,6 +149,10 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 				new TestPreview(pdfTest,dbManager);
 			}
 			
+		} else if(e.getSource() == correctTestBtn) {
+			new CorrectTest(
+							dbManager,
+							(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
 		}
 	}
 
@@ -154,6 +164,7 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		deleteTestBtn.setEnabled(testsTable.getSelectedRowCount() > 0);
 		editTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 		previewTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
+		correctTestBtn.setEnabled(testsTable.getSelectedRowCount() == 1);
 	}
 
 	private void setSettingBtn(JButton btn) {

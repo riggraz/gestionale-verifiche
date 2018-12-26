@@ -43,7 +43,7 @@ public class StudentModel extends AbstractTableModel {
 						"lastName VARCHAR(50)," +
 						"schoolClassName VARCHAR(50) REFERENCES SchoolClass(name) ON DELETE CASCADE ON UPDATE CASCADE)");
 			} catch (SQLException e1) {
-				System.err.println("***Si Ã¨ verificato un errore nella creazione della tabella Student***");
+				System.err.println("***Si e'¨ verificato un errore nella creazione della tabella Student***");
 				e1.printStackTrace();
 			}
 		}
@@ -175,4 +175,8 @@ public class StudentModel extends AbstractTableModel {
 		return columnIndex > 0;
 	}
 
+	public List<Student> getListStudent(){
+		return l;
+	}
+	
 }

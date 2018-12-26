@@ -152,7 +152,8 @@ public class ManageTest extends JPanel implements ActionListener, ListSelectionL
 		} else if(e.getSource() == correctTestBtn) {
 			new CorrectTest(
 							dbManager,
-							(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0));
+							(UUID) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 0),
+							(String) testsTable.getModel().getValueAt(testsTable.getSelectedRow(), 1));
 		}
 	}
 

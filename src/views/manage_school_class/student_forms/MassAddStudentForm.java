@@ -29,7 +29,7 @@ public class MassAddStudentForm extends GenericForm {
 	public MassAddStudentForm(JComponent parent, StudentModel studentModel, String selectedSchoolClassName) {
 		super(parent, "Aggiungi lista studenti");
 		setLayout(new FlowLayout());
-		setSize(360, 360);
+		setSize(400, 380);
 		
 		this.studentModel = studentModel;
 		this.selectedSchoolClassName = selectedSchoolClassName;

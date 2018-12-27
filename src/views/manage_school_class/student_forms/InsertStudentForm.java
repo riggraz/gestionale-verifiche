@@ -23,13 +23,9 @@ public class InsertStudentForm extends StudentForm {
 
 	@Override
 	public void save() {
-		if (checkErrorsAndUpdateUI() == 0) {
-			studentModel.insertRow(
-					FormUtils.capitalizeFirstLetter(firstNameTxt.getText()),
-					FormUtils.capitalizeFirstLetter(lastNameTxt.getText()),
-					selectedSchoolClassName);
-			dispose();
-		}
+		studentModel.insertRow(
+				FormUtils.capitalizeFirstLetter(firstNameTxt.getText()),
+				FormUtils.capitalizeFirstLetter(lastNameTxt.getText()),
+				selectedSchoolClassName);
 	}
-
 }

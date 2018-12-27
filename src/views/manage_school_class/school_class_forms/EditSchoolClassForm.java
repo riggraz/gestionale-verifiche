@@ -25,10 +25,7 @@ public class EditSchoolClassForm extends SchoolClassForm {
 	@Override
 	public void save() {
 		try {
-			if (checkErrorsAndUpdateUI() == 0) {
-				schoolClassModel.updateItem(index, schoolClassNameTxt.getText());
-				dispose();
-			}
+			schoolClassModel.updateItem(index, schoolClassNameTxt.getText());
 		} catch (SQLException e) {
 			if (e.getErrorCode() == 19) { // UNIQUE constraint failed
 				JOptionPane.showMessageDialog(this, "Esiste già una classe con questo nome");

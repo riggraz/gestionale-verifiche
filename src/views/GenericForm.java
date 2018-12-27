@@ -45,16 +45,19 @@ public abstract class GenericForm extends JFrame implements ActionListener {
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public final void actionPerformed(ActionEvent e) {
 		if (e.getSource() == saveBtn) {
-			save();
+			if (checkErrorsAndUpdateUI() == 0) {
+				save();
+				dispose();
+			}
 		} else if (e.getSource() == cancelBtn) {
 			dispose();
 		}
 	}
 	
-	// ogni form dovrà implementare il proprio controllo errori
-	protected abstract int checkErrorsAndUpdateUI();
+	// ogni form può implementare il proprio controllo errori
+	protected int checkErrorsAndUpdateUI() { return 0; }
 	
 	// Ogni form dovrà implementare la propria funzione save
 	public abstract void save();

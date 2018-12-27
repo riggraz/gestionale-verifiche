@@ -70,20 +70,17 @@ public class MassAddStudentForm extends GenericForm {
 
 	@Override
 	public void save() {
-		if (checkErrorsAndUpdateUI() == 0) {
-			String[] students = studentsTxtArea.getText().split(NEW_LINE_REGEX);
+		String[] students = studentsTxtArea.getText().split(NEW_LINE_REGEX);
+		
+		for (String student : students) {
+			String name = student.split(SPACE_REGEX)[0];
+			String surname = student.split(SPACE_REGEX)[1];
 			
-			for (String student : students) {
-				String name = student.split(SPACE_REGEX)[0];
-				String surname = student.split(SPACE_REGEX)[1];
-				
-				studentModel.insertRow(
-						FormUtils.capitalizeFirstLetter(name),
-						FormUtils.capitalizeFirstLetter(surname),
-						selectedSchoolClassName);
-				dispose();
-			}
+			studentModel.insertRow(
+					FormUtils.capitalizeFirstLetter(name),
+					FormUtils.capitalizeFirstLetter(surname),
+					selectedSchoolClassName);
+			dispose();
 		}
 	}
-
 }

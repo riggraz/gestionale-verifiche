@@ -48,6 +48,7 @@ public abstract class StudentForm extends GenericForm {
 		pack();
 	}
 	
+	@Override
 	protected int checkErrorsAndUpdateUI() {
 		int errorsCount = 0;
 		

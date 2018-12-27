@@ -179,4 +179,10 @@ public class StudentModel extends AbstractTableModel {
 		return l;
 	}
 	
+	public Student studentByUUID(UUID uuidStudent) {
+		for(Student s : l) {
+			if(s.getId().equals(uuidStudent)) return s;
+		}
+		return null;
+	}
 }

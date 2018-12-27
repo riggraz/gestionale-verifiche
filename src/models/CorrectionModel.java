@@ -3,6 +3,7 @@ package models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,6 +82,22 @@ public class CorrectionModel {
 		}
 	}
 	
+	
+	public void removeAllByClassAndIdTest(UUID idTest,String className) {
+		String query = String.format(
+				"DELETE FROM Correction WHERE idTest='%s' and schoolClassName='%s'",
+				idTest,
+				className);
+		
+		try {
+			dbManager.executeUpdate(query);
+			l.removeAll(l);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	private int getCorrectionIndexByIdStudent(UUID idStudent) {
 		for (int i = 0; i < l.size(); i++) {
 			if (l.get(i).getIdStudent().equals(idStudent)) return i; 
@@ -90,10 +107,12 @@ public class CorrectionModel {
 	
 	
 	public void insertItem(UUID idTest,List<Student> studList) {
-		Correction c = null;
+		List<Correction> correctionListInsert = new ArrayList<Correction>();
+		Collections.sort(studList);
 		
 		for(Student s : studList) {
-			c = new Correction(idTest,s.getId(),-1.0,s.getSchoolClassName());
+			Correction c = new Correction(idTest,s.getId(),-1.0,s.getSchoolClassName());
+			correctionListInsert.add(c);
 		}
 		
 		String query = "INSERT INTO Correction (idTest, idStudent, vote, schoolClassName) VALUES ";
@@ -113,10 +132,16 @@ public class CorrectionModel {
 		
 		try {
 			dbManager.executeUpdate(query);
-			l.add(c);
+			for( Correction c : correctionListInsert) {
+				l.add(c);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Correction> returnAllCorrectionList(){
+		return l;
 	}
 	
 }

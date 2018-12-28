@@ -224,4 +224,8 @@ public class CorrectionModel {
 		return sanitizedL;
 	}
 	
+	public void clear() {
+		l.clear();
+	}
+	
 }

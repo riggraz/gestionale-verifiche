@@ -95,6 +95,30 @@ public class StudentModel extends AbstractTableModel {
 		}
 	}
 	
+	public void updateRow(UUID id, String firstName, String lastName, String schoolClassName) {
+		String query = String.format(
+				"UPDATE Student SET firstName='%s', lastName='%s', schoolClassName='%s' WHERE id='%s'",
+				SQLUtils.escapeString(firstName),
+				SQLUtils.escapeString(lastName),
+				SQLUtils.escapeString(schoolClassName),
+				id);
+		
+		try {
+			dbManager.executeUpdate(query);
+			for (Student s : l) {
+				if (s.getId() == id) {
+					s.setFirstName(firstName);
+					s.setLastName(lastName);
+					s.setSchoolClassName(schoolClassName);
+				}
+			}
+			Collections.sort(l);
+			fireTableDataChanged();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void deleteRows(int[] rows) {
 		if (rows.length == 0) return;
 		

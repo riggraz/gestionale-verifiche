@@ -11,6 +11,7 @@ import javax.swing.table.AbstractTableModel;
 
 import entities.Student;
 import utils.DBManager;
+import utils.MathUtils;
 import utils.SQLUtils;
 
 public class StudentModel extends AbstractTableModel {
@@ -20,17 +21,21 @@ public class StudentModel extends AbstractTableModel {
 	private DBManager dbManager;
 	private List<Student> l;
 	
+	private CorrectionModel correctionModel;
+	
 	private final String[] columnNames = new String[] {
-			"id", "Nome", "Cognome", "Classe"
+			"id", "Nome", "Cognome", "Media"
 	};
 
 	private final Class<?>[] columnClass = new Class<?>[] {
-			String.class, String.class, String.class, String.class
+			String.class, String.class, String.class, Double.class
 	};
 	
 	public StudentModel(DBManager dbManager) {
 		this.dbManager = dbManager;
 		l = new ArrayList<Student>();
+		
+		this.correctionModel = new CorrectionModel(dbManager);
 		
 		try {
 			dbManager.executeQuery("SELECT * FROM Student LIMIT 1");			
@@ -43,7 +48,7 @@ public class StudentModel extends AbstractTableModel {
 						"lastName VARCHAR(50)," +
 						"schoolClassName VARCHAR(50) REFERENCES SchoolClass(name) ON DELETE CASCADE ON UPDATE CASCADE)");
 			} catch (SQLException e1) {
-				System.err.println("***Si e'¨ verificato un errore nella creazione della tabella Student***");
+				System.err.println("***Si e'ï¿½ verificato un errore nella creazione della tabella Student***");
 				e1.printStackTrace();
 			}
 		}
@@ -127,7 +132,7 @@ public class StudentModel extends AbstractTableModel {
 		case 0: return l.get(rowIndex).getId();
 		case 1: return l.get(rowIndex).getFirstName();
 		case 2: return l.get(rowIndex).getLastName();
-		case 3: return l.get(rowIndex).getSchoolClassName();
+		case 3: return MathUtils.round(correctionModel.getAverageByStudentId(l.get(rowIndex).getId()), 2);
 		default: return null;
 		}
 	}
@@ -139,7 +144,6 @@ public class StudentModel extends AbstractTableModel {
 		switch (columnIndex) {
 		case 1: query += "firstName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
 		case 2: query += "lastName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
-		case 3: query += "schoolClassName='" + (SQLUtils.escapeString((String)aValue)) + "'"; break;
 		}
 		
 		query += " WHERE id='" + l.get(rowIndex).getId() + "'";
@@ -150,7 +154,6 @@ public class StudentModel extends AbstractTableModel {
 			switch (columnIndex) {
 			case 1: l.get(rowIndex).setFirstName((String)aValue); break;
 			case 2: l.get(rowIndex).setLastName((String)aValue); break;
-			case 3: l.get(rowIndex).setSchoolClassName((String)aValue); break;
 			}
 			
 			Collections.sort(l);
@@ -172,7 +175,7 @@ public class StudentModel extends AbstractTableModel {
 	
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex > 0;
+		return columnIndex != 3;
 	}
 
 	public List<Student> getListStudent(){

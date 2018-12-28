@@ -139,7 +139,7 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 		}
 		
 		add(previewScrollPane, BorderLayout.CENTER);
-		add(savePrintPnl, BorderLayout.EAST);
+		add(savePrintPnl, BorderLayout.WEST);
 		add(nOfPagesLbl, BorderLayout.SOUTH);
 		
 		setSize(920, 560);

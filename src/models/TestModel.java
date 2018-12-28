@@ -47,7 +47,7 @@ public class TestModel extends AbstractTableModel {
 						"updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
 						"hasErrors INTEGER DEFAULT 1 NOT NULL)");
 			} catch (SQLException e1) {
-				System.err.println("***Si e'¨ verificato un errore nella creazione della tabella Test***");
+				System.err.println("***Si e'ï¿½ verificato un errore nella creazione della tabella Test***");
 				e1.printStackTrace();
 			}
 		}
@@ -71,6 +71,24 @@ public class TestModel extends AbstractTableModel {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public Test getTestById(UUID id) {
+		
+		ResultSet rs;
+		try {
+			rs = dbManager.executeQuery("SELECT * FROM Test WHERE id='" + id + "'");
+				return (new Test(
+						UUID.fromString(rs.getString("id")),
+						rs.getString("name"),
+						rs.getString("description"),
+						rs.getString("createdAt"),
+						rs.getString("updatedAt"),
+						rs.getInt("hasErrors")));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

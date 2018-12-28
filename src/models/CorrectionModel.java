@@ -55,16 +55,84 @@ public class CorrectionModel {
 				l.add(new Correction(UUID.fromString(rs.getString("idTest")),
 						UUID.fromString(rs.getString("idStudent")),
 						rs.getDouble("vote"),
-						rs.getString("date"),
-						rs.getString("schoolClassName")));
+						rs.getString("schoolClassName"),
+						rs.getString("date")));
 			}
 			return l;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
+	
+	// -------------------- codice di Ricco ----------------------
+	
+	public void loadByStudentId(UUID studentId) {
+		ResultSet rs;
+		String query = String.format(
+				"SELECT * FROM Correction WHERE idStudent='%s' ORDER BY date",
+				studentId);
+		
+		l.clear();
+		
+		try {
+			rs = dbManager.executeQuery(query);
+			while (rs.next()) {
+				l.add(new Correction(UUID.fromString(rs.getString("idTest")),
+						UUID.fromString(rs.getString("idStudent")),
+						rs.getDouble("vote"),
+						rs.getString("schoolClassName"),
+						rs.getString("date")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public double getAverageByStudentId(UUID studentId) {
+		loadByStudentId(studentId);
+		return getAverage();
+	}
+	
+	public double[] getAverageEvolutionByStudentId(UUID studentId) {
+		loadByStudentId(studentId);
+		
+		List<Double> averageEvolution = new ArrayList<Double>();
+		
+		for (int i = 0; i < l.size(); i++) {
+			if (l.get(i).getVote() != -1) {
+				averageEvolution.add(getAverage(i));
+			}
+		}
+		
+		double[] averageEvolutionArray = new double[averageEvolution.size()];
+		for (int i = 0; i < averageEvolution.size(); i++) {
+			averageEvolutionArray[i] = averageEvolution.get(i);
+		}
+		
+		return averageEvolutionArray;
+	}
+	
+	public double getAverage() {
+		return getAverage(l.size()-1);
+	}
+	
+	public double getAverage(int maxIndex) {
+		double average = 0.0;
+		int nOfVotes = 0;
+		
+		for (int i = 0; i <= maxIndex; i++) {
+			if (l.get(i).getVote() != -1.0) {
+				average += l.get(i).getVote();
+				nOfVotes++;
+			}
+		}
+		
+		if (nOfVotes != 0) return (average / nOfVotes);
+		else return 0.0;
+	}
+	
+	// ------------------------------------------------------------
 	
 	public void updateVote(UUID idStudent,UUID idTest ,double vote) {
 		
@@ -142,6 +210,18 @@ public class CorrectionModel {
 	
 	public List<Correction> returnAllCorrectionList(){
 		return l;
+	}
+	
+	public List<Correction> getL() {
+		return l;
+	}
+	
+	public List<Correction> getSanitizedL() {
+		List<Correction> sanitizedL = new ArrayList<Correction>();
+		for (Correction c : l) {
+			if (c.getVote() != -1.0) sanitizedL.add(c);
+		}
+		return sanitizedL;
 	}
 	
 }

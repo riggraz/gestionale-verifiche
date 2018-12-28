@@ -69,6 +69,8 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	
 	private UUID idTest;
 	
+	private int num;
+	
 	public CorrectTest(DBManager dbManager, UUID idTest, String nameTest)  {
 		super("Correzione Verifica");
 		this.idTest= idTest;
@@ -195,10 +197,10 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		uuidStudentList = new ArrayList<UUID>();
 		singlePersonListPnl = new ArrayList<JPanel>();
 		
-		for(Correction c : correctionList) {
-			Student s = studentModel.studentByUUID(c.getIdStudent());
+		for(Student s : studentList) {
+			Correction c = correctionModel.returnCorrectionByUUIDStudent(s.getId());
 			uuidStudentList.add(s.getId());
-			nameList.add(new JLabel(s.getFirstName() + " " + s.getLastName()));
+			nameList.add(new JLabel(s.getLastName() + " " + s.getFirstName()));
 			if(c.getVote() == -1.0) voteListTxf.add(new JTextField(""));
 			else voteListTxf.add(new JTextField(Double.toString(c.getVote())));
 
@@ -231,19 +233,21 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		correctionList = correctionModel.loadByIdTestAndClass(s.getName(),idTest);
 		
 		if(!correctionList.isEmpty()) {
-			if(correctionList.size() != studentList.size()) { 
-				List<Correction> correctionListLastVote = new ArrayList<Correction>();
-				correctionListLastVote = correctionModel.returnAllCorrectionList();
-				correctionModel.removeAllByClassAndIdTest(idTest, schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName());
-				correctionModel.insertItem(idTest, studentList);
-				System.out.println(correctionList.get(2).getVote());
-				for(Correction c : correctionListLastVote) {
-					correctionModel.updateVote(c.getIdStudent(), idTest, c.getVote());
+			List<Student> newStudentList = new ArrayList<Student>();
+			for(Student stud : studentList) {
+				int findStudent =0;
+				for(Correction c : correctionList) {
+					if(stud.getId().equals(c.getIdStudent())) findStudent=1;
 				}
-				correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
-
-				repaintStudent();
+				if(findStudent ==0) {
+					newStudentList.add(stud);
+				}
 			}
+				if(newStudentList.size() !=0) {
+					correctionModel.insertItem(idTest,newStudentList);
+					Collections.sort(studentList);
+					repaintStudent();
+				}
 		}
 	}
 	
@@ -276,34 +280,50 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JLabel nUpgradeDbVote = new JLabel("");
-		int num=0;
+		num=0;
 
 		if(e.getSource() == upgrateBtn) {
 			
-			for(int i =0;i<voteListTxf.size();i++) {
-				if(voteListTxf.get(i).getText().equals("")) voteListTxf.get(i).setText("-1.0");
-			}
+		    Thread t = new Thread(new Runnable() {
+		        @Override
+		        public void run() {
+		
+		        numUpgrateDb.removeAll();
+				numUpgrateDb.add(new JLabel("Attendere.. Stiamo inserendo i nuovi valori"));
+				numUpgrateDb.revalidate();
+				numUpgrateDb.repaint();
 			
 						
-			for(int i =0;i<uuidStudentList.size();i++) {
-				if(Double.parseDouble(voteListTxf.get(i).getText()) != correctionList.get(i).getVote()) {
-					correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
-					num++;
-				}
-			}
+				for(int i =0;i<uuidStudentList.size();i++) {
+					for(Correction c : correctionList) {
+						
+						if(uuidStudentList.get(i).equals(c.getIdStudent())) {
+							if(voteListTxf.get(i).getText().equals("")) {
+								if(Double.parseDouble("-1.0") != c.getVote()) {
+									correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble("-1.0"));
+									num++;
+								}
+							} else {
+									if(Double.parseDouble(voteListTxf.get(i).getText()) != c.getVote()) {
+										correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
+										num++;
+									}
+							}
+						}
+					}
+				}	
 			
-			for(int i =0;i<voteListTxf.size();i++) {
-				if(voteListTxf.get(i).getText().equals("-1.0")) voteListTxf.get(i).setText("");
-			}
+				correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
 			
-			correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
+				numUpgrateDb.removeAll();
+				nUpgradeDbVote.setText("Correzione compleatata, inseriti i nuovi valori " + num);
+				numUpgrateDb.add(nUpgradeDbVote);
+				numUpgrateDb.revalidate();
+				numUpgrateDb.repaint();
 			
-			numUpgrateDb.removeAll();
-			nUpgradeDbVote.setText("Correzione compleatata, inseriti i nuovi valori " + num);
-			numUpgrateDb.add(nUpgradeDbVote);
-			numUpgrateDb.revalidate();
-			numUpgrateDb.repaint();
-			
+		        }     
+				    });
+				    t.start();
 			
 		}
 		

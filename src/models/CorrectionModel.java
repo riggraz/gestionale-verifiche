@@ -228,4 +228,11 @@ public class CorrectionModel {
 		l.clear();
 	}
 	
+	public Correction returnCorrectionByUUIDStudent(UUID idStudent) {
+		for(Correction c : l) {
+			if(c.getIdStudent().equals(idStudent)) return c;
+		}
+		return null;
+	}
+	
 }

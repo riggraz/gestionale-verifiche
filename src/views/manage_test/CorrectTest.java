@@ -1,5 +1,6 @@
 package views.manage_test;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,9 +21,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import models.CorrectionModel;
@@ -69,7 +73,8 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	
 	private UUID idTest;
 	
-	private int num;
+	private Border errorBorder;
+	private int numVoteUpdate;
 	
 	public CorrectTest(DBManager dbManager, UUID idTest, String nameTest)  {
 		super("Correzione Verifica");
@@ -136,6 +141,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		JScrollPane voteScrollPane = new JScrollPane(votePnl);
 		voteScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		
+		setBorders();
 		upgrateBtn = new JButton("Correggi");
 		upgrateBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 		upgrateButtonPnl = new JPanel();
@@ -213,8 +219,8 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			
 			personPnl = new JPanel(new GridLayout(2,2));
 			
+
 			personPnl.add(nameList.get(i));
-			nameList.get(i).setBorder(new EmptyBorder(0,20,0,0));
 			personPnl.add(voteListTxf.get(i));
 			personPnl.add(new JLabel(""));
 			singlePersonPnl.add(personPnl);
@@ -280,55 +286,93 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JLabel nUpgradeDbVote = new JLabel("");
-		num=0;
+		numVoteUpdate=0;
 
 		if(e.getSource() == upgrateBtn) {
 			
-		    Thread t = new Thread(new Runnable() {
-		        @Override
-		        public void run() {
+
+			
+			if(checkCorrectVote()) {
+				Thread t = new Thread(new Runnable() {
+					public void run() {
 		
-		        numUpgrateDb.removeAll();
-				numUpgrateDb.add(new JLabel("Attendere.. Stiamo inserendo i nuovi valori"));
-				numUpgrateDb.revalidate();
-				numUpgrateDb.repaint();
+						numUpgrateDb.removeAll();
+						numUpgrateDb.add(new JLabel("Attendere.. Stiamo inserendo i nuovi valori"));
+						numUpgrateDb.revalidate();
+						numUpgrateDb.repaint();
 			
 						
-				for(int i =0;i<uuidStudentList.size();i++) {
-					for(Correction c : correctionList) {
+						for(int i =0;i<uuidStudentList.size();i++) {
+							for(Correction c : correctionList) {
 						
-						if(uuidStudentList.get(i).equals(c.getIdStudent())) {
-							if(voteListTxf.get(i).getText().equals("")) {
-								if(Double.parseDouble("-1.0") != c.getVote()) {
-									correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble("-1.0"));
-									num++;
-								}
-							} else {
-									if(Double.parseDouble(voteListTxf.get(i).getText()) != c.getVote()) {
-										correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
-										num++;
+								if(uuidStudentList.get(i).equals(c.getIdStudent())) {
+									if(voteListTxf.get(i).getText().equals("")) {
+										if(Double.parseDouble("-1.0") != c.getVote()) {
+											correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble("-1.0"));
+											numVoteUpdate++;
+										}
+									} else {
+										if(Double.parseDouble(voteListTxf.get(i).getText()) != c.getVote()) {
+											correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
+											numVoteUpdate++;
+										}
 									}
+								}
 							}
 						}
-					}
-				}	
+						
+						repaintBorderTextField();
 			
-				correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
+						correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
 			
-				numUpgrateDb.removeAll();
-				nUpgradeDbVote.setText("Correzione compleatata, inseriti i nuovi valori " + num);
-				numUpgrateDb.add(nUpgradeDbVote);
-				numUpgrateDb.revalidate();
-				numUpgrateDb.repaint();
+						numUpgrateDb.removeAll();
+						nUpgradeDbVote.setText("Correzione compleatata, inseriti i nuovi " + numVoteUpdate + " valori");
+						numUpgrateDb.add(nUpgradeDbVote);
+						numUpgrateDb.revalidate();
+						numUpgrateDb.repaint();
 			
-		        }     
-				    });
-				    t.start();
+					}     
+				    	});
+				    	t.start();
 			
+			}else {
+				JOptionPane.showMessageDialog(this,
+					    "ERROR: I voti inseriti sono negativi o maggiori di 10",
+					    "Error",
+					    JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		
 	}
 	
+	private void setBorders() {
+		Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+		Border redLine = BorderFactory.createLineBorder(Color.RED);
+		
+		errorBorder = BorderFactory.createCompoundBorder(
+				redLine,
+				BorderFactory.createCompoundBorder(emptyBorder, emptyBorder));
+		
+	}
 	
+	private boolean checkCorrectVote() {
+		boolean allCorrect =true;
+		for(JTextField voteString : voteListTxf) {
+			if(!voteString.getText().equals("")) {
+				Double voteDouble = Double.parseDouble(voteString.getText());
+				if(voteDouble < 0 || voteDouble > 10) {
+					voteString.setBorder(errorBorder);
+					allCorrect = false;
+				}
+			}
+		}
+		return allCorrect;
+	}
 	
+	private void repaintBorderTextField() {
+		JTextField normalJtextField = new JTextField();
+		for(JTextField voteString : voteListTxf) {
+			voteString.setBorder(normalJtextField.getBorder());
+		}
+	}
 }

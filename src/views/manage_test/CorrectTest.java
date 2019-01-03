@@ -21,11 +21,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
@@ -40,52 +39,50 @@ import entities.SchoolClass;
 import entities.Student;
 
 public class CorrectTest extends JFrame  implements ActionListener, ItemListener {
-
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel mainPnl;
 	private JPanel correctAnswerPnl;
-	private QuestionModel questionModel;
-	private List<Question> questionList;
-	private JLabel nameTestLbl;
-	private JLabel correctAnswerLbl;
-	private JLabel stringCorrectAnswer;
 	private JPanel upgrateButtonPnl;
 	private JPanel classPnl;
 	private JPanel votePnl;
-	private List<JPanel> singlePersonListPnl;
 	private JPanel singlePersonPnl;
 	private JPanel personPnl;
 	private JPanel numUpgrateDb;
+	private JLabel nameTestLbl;
+	private JLabel correctAnswerLbl;
+	private JLabel stringCorrectAnswer;
+
 	private JComboBox<SchoolClass> schoolClassCmbBox;
-	private List<JLabel> nameList;
-	private List<JTextField> voteListTxf;
-	private List<UUID> uuidStudentList;
 	private JButton upgrateBtn;
 	
-
+	private QuestionModel questionModel;
 	private SchoolClassComboBoxModel schoolClassComboBoxModel; 
 	private CorrectionModel correctionModel;
 	private StudentModel studentModel;
 	
+	private List<Question> questionList;
+	private List<JPanel> singlePersonListPnl;
+	private List<JLabel> nameList;
+	private List<JTextField> voteListTxf;
+	private List<UUID> uuidStudentList;
 	private List<Correction> correctionList;
 	private List<Student> studentList;
 	
 	private UUID idTest;
-	
 	private Border errorBorder;
 	private int numVoteUpdate;
+	private int numErrorVote;
 	
 	public CorrectTest(DBManager dbManager, UUID idTest, String nameTest)  {
 		super("Correzione Verifica");
 		this.idTest= idTest;
-		mainPnl = new JPanel();
 		
+		mainPnl = new JPanel();	
 		mainPnl.setLayout(new BoxLayout(mainPnl,BoxLayout.PAGE_AXIS));
-		getRootPane().setBorder(new EmptyBorder(16, 16, 16, 16));
+		getRootPane().setBorder(new EmptyBorder(0, 16, 16, 16));
 		
 		correctAnswerPnl = new JPanel();
-		correctAnswerPnl.setBorder(new EmptyBorder(16,16,16,16));
 		
 		nameTestLbl = new JLabel(nameTest);
 		nameTestLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -95,22 +92,20 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		stringCorrectAnswer.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 15));
 		correctAnswerLbl = new JLabel("");
 		correctAnswerLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 15));
+		
 		questionModel = new QuestionModel(dbManager);
 		questionModel.loadByTestId(idTest);
 		questionList = questionModel.getQuestions();
 		
-		findCorrectAnswer();
-		
+		findCorrectAnswer();	
 	
 		correctAnswerPnl.add(stringCorrectAnswer);
 		correctAnswerPnl.add(correctAnswerLbl);	
-		correctAnswerPnl.setMaximumSize(new Dimension(1000,50));
-		
+		correctAnswerPnl.setMaximumSize(new Dimension(1000,50));	
 		
 		schoolClassCmbBox = new JComboBox<SchoolClass>();
 		schoolClassComboBoxModel = new SchoolClassComboBoxModel(dbManager);
 		schoolClassCmbBox.setModel(schoolClassComboBoxModel);
-
 		
 		correctionModel = new CorrectionModel(dbManager);
 		studentModel = new StudentModel(dbManager);
@@ -121,50 +116,14 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		if (schoolClassCmbBox.getItemCount() > 0) {
 			schoolClassCmbBox.setSelectedIndex(0);
 			loadCorrectionStudentList(schoolClassCmbBox.getItemAt(0));
-			if(correctionList.isEmpty()) loadCorrectionListEmpty(schoolClassCmbBox.getItemAt(0));			
-		}
+			if(correctionList.isEmpty()) loadCorrectionListEmpty(schoolClassCmbBox.getItemAt(0));
+			addClassPnl();
+			addVoteAndUpgratePnl();
+			
+		}else {
+			addClassPnl();
+		}			
 		
-		classPnl = new JPanel(new GridLayout(1,2));
-		JLabel stringSelClass = new JLabel("Selezione la classe: ");
-		stringSelClass.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 15));
-		stringSelClass.setBorder(new EmptyBorder(0,20,0,0));
-		
-		classPnl.add(stringSelClass);
-		classPnl.add(schoolClassCmbBox);
-		classPnl.setMaximumSize(new Dimension(550,30));
-		
-		votePnl = new JPanel();
-		votePnl.setLayout(new BoxLayout(votePnl,BoxLayout.PAGE_AXIS));
-		votePnl.setMaximumSize(new Dimension(800,100));
-		addStudentVoteAtPanel();	
-
-		JScrollPane voteScrollPane = new JScrollPane(votePnl);
-		voteScrollPane.setBorder(BorderFactory.createEmptyBorder());
-		
-		setBorders();
-		upgrateBtn = new JButton("Correggi");
-		upgrateBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-		upgrateButtonPnl = new JPanel();
-		upgrateButtonPnl.add(upgrateBtn);
-		upgrateButtonPnl.setMaximumSize(new Dimension(1000,100));
-		
-		
-		schoolClassCmbBox.addItemListener(this);
-		upgrateBtn.addActionListener(this);
-		
-		numUpgrateDb = new JPanel();
-		numUpgrateDb.add(new JLabel(""));
-		numUpgrateDb.setMaximumSize(new Dimension(500,100));
-		
-		mainPnl.add(nameTestLbl);
-		mainPnl.add(Box.createRigidArea(new Dimension(30,15)));
-		mainPnl.add(correctAnswerPnl);
-		mainPnl.add(Box.createRigidArea(new Dimension(40,40)));
-		mainPnl.add(classPnl);
-		mainPnl.add(Box.createRigidArea(new Dimension(30,30)));
-		mainPnl.add(voteScrollPane);
-		mainPnl.add(upgrateButtonPnl);
-		mainPnl.add(numUpgrateDb);
 		this.add(mainPnl);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(550, 650);
@@ -197,29 +156,35 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			correctionList = correctionModel.loadByIdTestAndClass(schoolClass.getName(),idTest);
 	}
 	
+	private void getStudentByStudentList() {
+		
+		for(Student s : studentList) {
+			Correction c = correctionModel.returnCorrectionByUUIDStudent(s.getId());
+			uuidStudentList.add(s.getId());
+			nameList.add(new JLabel(s.getLastName() + " " + s.getFirstName(), SwingConstants.RIGHT));
+			
+			if(c.getVote() == -1.0) voteListTxf.add(new JTextField(""));
+			else voteListTxf.add(new JTextField(Double.toString(c.getVote())));
+
+		}
+	}
+	
 	private void addStudentVoteAtPanel() {
 		nameList = new ArrayList<JLabel>();
 		voteListTxf = new ArrayList<JTextField>();
 		uuidStudentList = new ArrayList<UUID>();
 		singlePersonListPnl = new ArrayList<JPanel>();
 		
-		for(Student s : studentList) {
-			Correction c = correctionModel.returnCorrectionByUUIDStudent(s.getId());
-			uuidStudentList.add(s.getId());
-			nameList.add(new JLabel(s.getLastName() + " " + s.getFirstName()));
-			if(c.getVote() == -1.0) voteListTxf.add(new JTextField(""));
-			else voteListTxf.add(new JTextField(Double.toString(c.getVote())));
-
-		}
+		getStudentByStudentList();
 		
 		for(int i =0;i<nameList.size();i++) {
 			singlePersonPnl = new JPanel();
 			singlePersonPnl.setLayout(new BoxLayout(singlePersonPnl,BoxLayout.LINE_AXIS));
 			singlePersonPnl.setMaximumSize(new Dimension(400,40));
 			
-			personPnl = new JPanel(new GridLayout(2,2));
+			personPnl = new JPanel(new GridLayout(2,2,120,0));
 			
-
+			
 			personPnl.add(nameList.get(i));
 			personPnl.add(voteListTxf.get(i));
 			personPnl.add(new JLabel(""));
@@ -232,28 +197,88 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		}
 	}
 	
+	private void addVoteAndUpgratePnl() {
+		
+		votePnl = new JPanel();
+		votePnl.setLayout(new BoxLayout(votePnl,BoxLayout.PAGE_AXIS));
+		votePnl.setMaximumSize(new Dimension(800,100));
+		addStudentVoteAtPanel();	
+
+		JScrollPane voteScrollPane = new JScrollPane(votePnl);
+		voteScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		
+		setBorders();
+		upgrateBtn = new JButton("Correggi");
+		upgrateBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+		upgrateButtonPnl = new JPanel();
+		upgrateButtonPnl.add(upgrateBtn);
+		upgrateButtonPnl.setMaximumSize(new Dimension(1000,100));
+		
+		
+		schoolClassCmbBox.addItemListener(this);
+		upgrateBtn.addActionListener(this);
+		
+		numUpgrateDb = new JPanel();
+		numUpgrateDb.add(new JLabel(""));
+		numUpgrateDb.setMaximumSize(new Dimension(500,100));
+		
+		addFistPartOfFrame();
+		
+		mainPnl.add(Box.createRigidArea(new Dimension(30,30)));
+		mainPnl.add(voteScrollPane);
+		mainPnl.add(upgrateButtonPnl);
+		mainPnl.add(numUpgrateDb);
+	}
+	
+	private void addClassPnl(){
+		
+		classPnl = new JPanel(new GridLayout(1,2));
+		JLabel stringSelClass = new JLabel("Selezione la classe: ");
+		stringSelClass.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 15));
+		stringSelClass.setBorder(new EmptyBorder(0,50,0,0));
+		
+		classPnl.add(stringSelClass);
+		classPnl.add(schoolClassCmbBox);
+		classPnl.setMaximumSize(new Dimension(550,30));
+		
+		addFistPartOfFrame();
+	}
+	
+	private void addFistPartOfFrame() {
+		
+		mainPnl.add(nameTestLbl);
+		mainPnl.add(Box.createRigidArea(new Dimension(30,15)));
+		mainPnl.add(correctAnswerPnl);
+		mainPnl.add(Box.createRigidArea(new Dimension(40,40)));
+		mainPnl.add(classPnl);
+	}
+	
 	private void loadCorrectionStudentList(SchoolClass s) {
 		studentModel.loadBySchoolClassName(s.getName());
-		studentList = studentModel.getListStudent();	
-		Collections.sort(studentList);
-		correctionList = correctionModel.loadByIdTestAndClass(s.getName(),idTest);
+		studentList = studentModel.getListStudent();
 		
-		if(!correctionList.isEmpty()) {
-			List<Student> newStudentList = new ArrayList<Student>();
-			for(Student stud : studentList) {
-				int findStudent =0;
-				for(Correction c : correctionList) {
-					if(stud.getId().equals(c.getIdStudent())) findStudent=1;
+		if(studentList.size()>0) {
+			
+			Collections.sort(studentList);
+			correctionList = correctionModel.loadByIdTestAndClass(s.getName(),idTest);
+		
+			if(!correctionList.isEmpty()) {
+				List<Student> newStudentList = new ArrayList<Student>();
+				for(Student stud : studentList) {
+					int findStudent =0;
+					for(Correction c : correctionList) {
+						if(stud.getId().equals(c.getIdStudent())) findStudent=1;
+					}
+					if(findStudent ==0) {
+						newStudentList.add(stud);
+					}
 				}
-				if(findStudent ==0) {
-					newStudentList.add(stud);
-				}
+					if(newStudentList.size() !=0) {
+						correctionModel.insertItem(idTest,newStudentList);
+						Collections.sort(studentList);
+						repaintStudent();
+					}
 			}
-				if(newStudentList.size() !=0) {
-					correctionModel.insertItem(idTest,newStudentList);
-					Collections.sort(studentList);
-					repaintStudent();
-				}
 		}
 	}
 	
@@ -326,7 +351,11 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 						correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
 			
 						numUpgrateDb.removeAll();
-						nUpgradeDbVote.setText("Correzione compleatata, inseriti i nuovi " + numVoteUpdate + " valori");
+						if(numVoteUpdate == 1) {
+							nUpgradeDbVote.setText("Correzione compleatata, inserito il nuovo valore");
+						}else {
+							nUpgradeDbVote.setText("Correzione compleatata, inseriti i " + numVoteUpdate + " nuovi valori");
+						}
 						numUpgrateDb.add(nUpgradeDbVote);
 						numUpgrateDb.revalidate();
 						numUpgrateDb.repaint();
@@ -336,10 +365,19 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 				    	t.start();
 			
 			}else {
-				JOptionPane.showMessageDialog(this,
-					    "ERROR: I voti inseriti sono negativi o maggiori di 10",
-					    "Error",
-					    JOptionPane.ERROR_MESSAGE);
+				JLabel errorLbl;				
+				if(numErrorVote==1) {
+					errorLbl = new JLabel("ERROR: c'è " + numErrorVote +" voto inserito che è negativo o maggiore di 10");
+				}else {
+					errorLbl = new JLabel("ERROR: ci sono: " + numErrorVote +" voti inseriti che sono negativi o maggiori di 10");
+				}
+				
+				errorLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.BOLD, 14));
+				errorLbl.setForeground(Color.RED);
+				numUpgrateDb.removeAll();
+				numUpgrateDb.add(errorLbl);
+				numUpgrateDb.revalidate();
+				numUpgrateDb.repaint();
 			}
 		}
 		
@@ -357,11 +395,13 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	
 	private boolean checkCorrectVote() {
 		boolean allCorrect =true;
+		numErrorVote =0;
 		for(JTextField voteString : voteListTxf) {
 			if(!voteString.getText().equals("")) {
 				Double voteDouble = Double.parseDouble(voteString.getText());
 				if(voteDouble < 0 || voteDouble > 10) {
 					voteString.setBorder(errorBorder);
+					numErrorVote++;
 					allCorrect = false;
 				}
 			}
@@ -375,4 +415,6 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			voteString.setBorder(normalJtextField.getBorder());
 		}
 	}
+	
+
 }

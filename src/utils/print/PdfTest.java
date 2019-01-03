@@ -113,7 +113,7 @@ public class PdfTest {
 	   		
 	   		for(int dim = 0; dim < lsQuestion.size(); dim++) {
   	        	dividedQuestion = divideLine(lsQuestion.get(dim).getBody(), pagProp);
-  	        	printQeA(dividedQuestion, posPag, lsAnswer, dim, document, pagProp);
+  	        	printQeA(dividedQuestion, posPag, lsAnswer, dim, document, pagProp,dim,lsQuestion.size());
   	        }	
   	        
   	        //Ending the content stream

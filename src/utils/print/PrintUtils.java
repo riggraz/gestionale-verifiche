@@ -24,7 +24,7 @@ import utils.print.PageProperty;
 
 public class PrintUtils {
 
-	public static void printQeA(List<String> dividedQuestion, PagePosition posPag, List<Answer> lsAnswer, int dim, PDDocument document, PageProperty pagProp) throws IOException {
+	public static void printQeA(List<String> dividedQuestion, PagePosition posPag, List<Answer> lsAnswer, int dim, PDDocument document, PageProperty pagProp,int actualDim, int totalDim) throws IOException {
 
 		List<String> divideAnswer = new ArrayList<String>();
 		
@@ -66,7 +66,7 @@ public class PrintUtils {
 				
 				newLine(posPag,pagProp);
 	          	
-	          	if(posPag.getLine() >= 38) {
+	          	if(posPag.getLine() >= 38 && actualDim != (totalDim-1)) {
 	          		createNewContent(posPag,document,pagProp);
 	          	}
 	      	}	
@@ -74,7 +74,7 @@ public class PrintUtils {
 		
 		newLine(posPag,pagProp);
       	
-    	if(posPag.getLine() >= 38) {
+    	if(posPag.getLine() >= 38  && actualDim != (totalDim-1)) {
       		createNewContent(posPag,document,pagProp);
       	}
       	

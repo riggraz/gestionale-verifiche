@@ -128,6 +128,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(550, 650);
 		setVisible(true);
+		
 	}
 
 	private void findCorrectAnswer() {
@@ -182,12 +183,11 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			singlePersonPnl.setLayout(new BoxLayout(singlePersonPnl,BoxLayout.LINE_AXIS));
 			singlePersonPnl.setMaximumSize(new Dimension(400,40));
 			
-			personPnl = new JPanel(new GridLayout(2,2,120,0));
-			
-			
+			personPnl = new JPanel(new GridLayout(2,2,120,0));				
 			personPnl.add(nameList.get(i));
 			personPnl.add(voteListTxf.get(i));
 			personPnl.add(new JLabel(""));
+			
 			singlePersonPnl.add(personPnl);
 			singlePersonListPnl.add(singlePersonPnl);
 		}
@@ -253,6 +253,25 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		mainPnl.add(classPnl);
 	}
 	
+	private void findAddNewStudent() {
+		
+		List<Student> newStudentList = new ArrayList<Student>();
+		for(Student stud : studentList) {
+			int findStudent =0;
+			for(Correction c : correctionList) {
+				if(stud.getId().equals(c.getIdStudent())) findStudent=1;
+			}
+			if(findStudent ==0) {
+				newStudentList.add(stud);
+			}
+		}
+			if(newStudentList.size() !=0) {
+				correctionModel.insertItem(idTest,newStudentList);
+				Collections.sort(studentList);
+				repaintStudent();
+			}
+	}
+	
 	private void loadCorrectionStudentList(SchoolClass s) {
 		studentModel.loadBySchoolClassName(s.getName());
 		studentList = studentModel.getListStudent();
@@ -263,109 +282,108 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			correctionList = correctionModel.loadByIdTestAndClass(s.getName(),idTest);
 		
 			if(!correctionList.isEmpty()) {
-				List<Student> newStudentList = new ArrayList<Student>();
-				for(Student stud : studentList) {
-					int findStudent =0;
-					for(Correction c : correctionList) {
-						if(stud.getId().equals(c.getIdStudent())) findStudent=1;
-					}
-					if(findStudent ==0) {
-						newStudentList.add(stud);
-					}
-				}
-					if(newStudentList.size() !=0) {
-						correctionModel.insertItem(idTest,newStudentList);
-						Collections.sort(studentList);
-						repaintStudent();
-					}
+				findAddNewStudent();
 			}
+			
 		}
+	}
+	
+	private void RevalidateRepaninPnl(JPanel j) {
+		j.revalidate();
+		j.repaint();
 	}
 	
 	private void repaintStudent() {
 		
 		votePnl.removeAll();	
 		addStudentVoteAtPanel();
-		votePnl.revalidate();
-		votePnl.repaint();
+		RevalidateRepaninPnl(votePnl);
 		
 	}
 
-	@Override
+	
 	public void itemStateChanged(ItemEvent e) {
+		
 		if (e.getSource() == schoolClassCmbBox) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
+				
 				loadCorrectionStudentList(((SchoolClass)e.getItem()));
 				if(correctionList.isEmpty()) loadCorrectionListEmpty(((SchoolClass)e.getItem()));
 				
 				repaintStudent();
+				
 				numUpgrateDb.removeAll();
 				numUpgrateDb.add(new JLabel(""));
-				numUpgrateDb.revalidate();
-				numUpgrateDb.repaint();
+				RevalidateRepaninPnl(numUpgrateDb);
+			}
+		}		
+	}
+	
+	public void upgrateVote() {
+		
+		for(int i =0;i<uuidStudentList.size();i++) {
+			for(Correction c : correctionList) {
+		
+				if(uuidStudentList.get(i).equals(c.getIdStudent())) {
+					
+					if(voteListTxf.get(i).getText().equals("")) {
+						
+						if(Double.parseDouble("-1.0") != c.getVote()) {
+							correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble("-1.0"));
+							numVoteUpdate++;
+						}
+					} else {
+						if(Double.parseDouble(voteListTxf.get(i).getText()) != c.getVote()) {
+							correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
+							numVoteUpdate++;
+						}
+					}
+				}
 			}
 		}
-		
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		JLabel nUpgradeDbVote = new JLabel("");
 		numVoteUpdate=0;
 
 		if(e.getSource() == upgrateBtn) {
 			
-
-			
 			if(checkCorrectVote()) {
+				
 				Thread t = new Thread(new Runnable() {
 					public void run() {
 		
 						numUpgrateDb.removeAll();
 						numUpgrateDb.add(new JLabel("Attendere.. Stiamo inserendo i nuovi valori"));
-						numUpgrateDb.revalidate();
-						numUpgrateDb.repaint();
+						RevalidateRepaninPnl(numUpgrateDb);
 			
 						
-						for(int i =0;i<uuidStudentList.size();i++) {
-							for(Correction c : correctionList) {
-						
-								if(uuidStudentList.get(i).equals(c.getIdStudent())) {
-									if(voteListTxf.get(i).getText().equals("")) {
-										if(Double.parseDouble("-1.0") != c.getVote()) {
-											correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble("-1.0"));
-											numVoteUpdate++;
-										}
-									} else {
-										if(Double.parseDouble(voteListTxf.get(i).getText()) != c.getVote()) {
-											correctionModel.updateVote(uuidStudentList.get(i), idTest,Double.parseDouble(voteListTxf.get(i).getText()));
-											numVoteUpdate++;
-										}
-									}
-								}
-							}
-						}
+						upgrateVote();
 						
 						repaintBorderTextField();
 			
-						correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
+						correctionList = correctionModel.loadByIdTestAndClass(schoolClassCmbBox.getItemAt(
+																					schoolClassCmbBox.getSelectedIndex()).getName(),idTest);
 			
 						numUpgrateDb.removeAll();
+						
 						if(numVoteUpdate == 1) {
 							nUpgradeDbVote.setText("Correzione compleatata, inserito il nuovo valore");
 						}else {
 							nUpgradeDbVote.setText("Correzione compleatata, inseriti i " + numVoteUpdate + " nuovi valori");
 						}
 						numUpgrateDb.add(nUpgradeDbVote);
-						numUpgrateDb.revalidate();
-						numUpgrateDb.repaint();
+						RevalidateRepaninPnl(numUpgrateDb);
 			
 					}     
 				    	});
 				    	t.start();
 			
-			}else {
-				JLabel errorLbl;				
+			} else {
+				JLabel errorLbl;	
+				
 				if(numErrorVote==1) {
 					errorLbl = new JLabel("ERROR: c'è " + numErrorVote +" voto inserito che è negativo o maggiore di 10");
 				}else {
@@ -374,10 +392,10 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 				
 				errorLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.BOLD, 14));
 				errorLbl.setForeground(Color.RED);
+				
 				numUpgrateDb.removeAll();
 				numUpgrateDb.add(errorLbl);
-				numUpgrateDb.revalidate();
-				numUpgrateDb.repaint();
+				RevalidateRepaninPnl(numUpgrateDb);
 			}
 		}
 		

@@ -80,7 +80,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		
 		mainPnl = new JPanel();	
 		mainPnl.setLayout(new BoxLayout(mainPnl,BoxLayout.PAGE_AXIS));
-		getRootPane().setBorder(new EmptyBorder(0, 16, 16, 16));
+		getRootPane().setBorder(new EmptyBorder(20, 16, 16, 16));
 		
 		correctAnswerPnl = new JPanel();
 		
@@ -224,7 +224,6 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		numUpgrateDb.add(new JLabel(""));
 		numUpgrateDb.setMaximumSize(new Dimension(500,100));
 		
-		addFistPartOfFrame();
 		
 		mainPnl.add(Box.createRigidArea(new Dimension(30,30)));
 		mainPnl.add(voteScrollPane);

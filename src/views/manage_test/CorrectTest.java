@@ -183,12 +183,11 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		for(int i =0;i<nameList.size();i++) {
 			singlePersonPnl = new JPanel();
 			singlePersonPnl.setLayout(new BoxLayout(singlePersonPnl,BoxLayout.LINE_AXIS));
-			singlePersonPnl.setMaximumSize(new Dimension(400,40));
+			singlePersonPnl.setMaximumSize(new Dimension(400, 30));
 			
-			personPnl = new JPanel(new GridLayout(2,2,120,0));				
+			personPnl = new JPanel(new GridLayout(1, 2, 80, 0));
 			personPnl.add(nameList.get(i));
 			personPnl.add(voteListTxf.get(i));
-			personPnl.add(new JLabel(""));
 			
 			singlePersonPnl.add(personPnl);
 			singlePersonListPnl.add(singlePersonPnl);
@@ -196,6 +195,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		
 		for(int i = 0;i<nameList.size();i++) {
 			votePnl.add(singlePersonListPnl.get(i));
+			votePnl.add(Box.createRigidArea(new Dimension(0, 15)));
 		}
 	}
 	
@@ -227,6 +227,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		
 		mainPnl.add(Box.createRigidArea(new Dimension(30,30)));
 		mainPnl.add(voteScrollPane);
+		mainPnl.add(Box.createRigidArea(new Dimension(0, 15)));
 		mainPnl.add(upgrateButtonPnl);
 		mainPnl.add(numUpgrateDb);
 	}
@@ -234,7 +235,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	private void addClassPnl(){
 		
 		classPnl = new JPanel(new GridLayout(1,2));
-		JLabel stringSelClass = new JLabel("Selezione la classe: ");
+		JLabel stringSelClass = new JLabel("Seleziona la classe: ");
 		stringSelClass.setFont(new Font(new JLabel().getFont().getFamily(), Font.PLAIN, 15));
 		stringSelClass.setBorder(new EmptyBorder(0,50,0,0));
 		
@@ -248,9 +249,9 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	private void addFistPartOfFrame() {
 		
 		mainPnl.add(nameTestLbl);
-		mainPnl.add(Box.createRigidArea(new Dimension(30,15)));
+		mainPnl.add(Box.createRigidArea(new Dimension(0,15)));
 		mainPnl.add(correctAnswerPnl);
-		mainPnl.add(Box.createRigidArea(new Dimension(40,40)));
+		mainPnl.add(Box.createRigidArea(new Dimension(0,15)));
 		mainPnl.add(classPnl);
 	}
 	
@@ -357,7 +358,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 					public void run() {
 		
 						numUpgrateDb.removeAll();
-						numUpgrateDb.add(new JLabel("Attendere.. Stiamo inserendo i nuovi valori"));
+						numUpgrateDb.add(new JLabel("Inserimento voti in corso..."));
 						RevalidateRepaninPnl(numUpgrateDb);
 			
 						
@@ -371,9 +372,9 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 						numUpgrateDb.removeAll();
 						
 						if(numVoteUpdate == 1) {
-							nUpgradeDbVote.setText("Correzione compleatata, inserito il nuovo valore");
+							nUpgradeDbVote.setText("Correzione completata, inserito un nuovo voto");
 						}else {
-							nUpgradeDbVote.setText("Correzione compleatata, inseriti i " + numVoteUpdate + " nuovi valori");
+							nUpgradeDbVote.setText("Correzione completata, inseriti " + numVoteUpdate + " nuovi voti");
 						}
 						numUpgrateDb.add(nUpgradeDbVote);
 						RevalidateRepaninPnl(numUpgrateDb);
@@ -386,9 +387,9 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 				JLabel errorLbl;	
 				
 				if(numErrorVote==1) {
-					errorLbl = new JLabel("ERROR: c'è " + numErrorVote +" voto inserito che è negativo o maggiore di 10");
+					errorLbl = new JLabel("Un voto inserito e' negativo o maggiore di 10");
 				}else {
-					errorLbl = new JLabel("ERROR: ci sono: " + numErrorVote +" voti inseriti che sono negativi o maggiori di 10");
+					errorLbl = new JLabel(numErrorVote + " voti inseriti sono negativi o maggiori di 10");
 				}
 				
 				errorLbl.setFont(new Font(new JLabel().getFont().getFamily(), Font.BOLD, 14));
@@ -422,6 +423,8 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 					voteString.setBorder(errorBorder);
 					numErrorVote++;
 					allCorrect = false;
+				} else {
+					voteString.setBorder(new JTextField().getBorder());
 				}
 			}
 		}

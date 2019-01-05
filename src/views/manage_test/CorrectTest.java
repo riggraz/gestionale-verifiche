@@ -153,8 +153,10 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	
 	private void loadCorrectionListEmpty(SchoolClass schoolClass) {
 		
+		if(studentList.size()>0) {
 			correctionModel.insertItem(idTest, studentList);
 			correctionList = correctionModel.loadByIdTestAndClass(schoolClass.getName(),idTest);
+		}
 	}
 	
 	private void getStudentByStudentList() {
@@ -268,7 +270,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 			if(newStudentList.size() !=0) {
 				correctionModel.insertItem(idTest,newStudentList);
 				Collections.sort(studentList);
-				repaintStudent();
+				if(schoolClassCmbBox.getSelectedIndex() != 0) repaintStudent();
 			}
 	}
 	
@@ -276,8 +278,8 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		studentModel.loadBySchoolClassName(s.getName());
 		studentList = studentModel.getListStudent();
 		
+		
 		if(studentList.size()>0) {
-			
 			Collections.sort(studentList);
 			correctionList = correctionModel.loadByIdTestAndClass(s.getName(),idTest);
 		
@@ -295,7 +297,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 	
 	private void repaintStudent() {
 		
-		votePnl.removeAll();	
+		votePnl.removeAll();
 		addStudentVoteAtPanel();
 		RevalidateRepaninPnl(votePnl);
 		

@@ -224,8 +224,8 @@ public class TestModel extends AbstractTableModel {
 		case 0: return l.get(rowIndex).getId();
 		case 1: return l.get(rowIndex).getName();
 		case 2: return l.get(rowIndex).getDescription();
-		case 3: return l.get(rowIndex).getCreatedAt();
-		case 4: return l.get(rowIndex).getUpdatedAt();
+		case 3: return l.get(rowIndex).getCreatedAt().substring(0, 16);
+		case 4: return l.get(rowIndex).getUpdatedAt().substring(0, 16);
 		case 5: return l.get(rowIndex).hasErrors();
 		default: return null;
 		}

@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -103,6 +104,7 @@ public class TestPreview extends JFrame implements ActionListener, ListSelection
 		schoolClassList = new JList<SchoolClass>();
 		schoolClassList.setAlignmentX(CENTER_ALIGNMENT);
 		schoolClassList.setModel(schoolClassListModel);
+		schoolClassList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		schoolClassList.addListSelectionListener(this);
 		
 		schoolClassScrollPane = new JScrollPane();

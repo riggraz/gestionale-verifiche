@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -116,6 +117,7 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 		correctionsTable = new JTable();
 		correctionsTable.setModel(correctionTableModel);
 		correctionsTable.getSelectionModel().addListSelectionListener(this);
+		correctionsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		((DefaultTableCellRenderer)correctionsTable.getDefaultRenderer(Double.class)).setHorizontalAlignment(SwingConstants.LEFT);
 		correctionsTableScrollPane = new JScrollPane(correctionsTable);
 		correctionsTableScrollPane.setPreferredSize(new Dimension(280, 280));
@@ -160,7 +162,8 @@ public class StudentTable extends JPanel implements ActionListener, ListSelectio
 			new EditStudentForm(
 					this,
 					studentModel,
-					new Student(id, firstName, lastName, schoolClassName));
+					new Student(id, firstName, lastName, schoolClassName),
+					schoolClassCmbBox);
 		}
 		
 		if (e.getSource() == deleteStudentBtn) {

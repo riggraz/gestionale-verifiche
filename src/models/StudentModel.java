@@ -112,6 +112,8 @@ public class StudentModel extends AbstractTableModel {
 					s.setSchoolClassName(schoolClassName);
 				}
 			}
+			// se viene cambiata la SchoolClass rimuove lo studente in modo da non visualizzarlo in tabella
+			l.removeIf(s -> s.getSchoolClassName() == schoolClassName);
 			Collections.sort(l);
 			fireTableDataChanged();
 		} catch (SQLException e) {

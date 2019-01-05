@@ -2,8 +2,10 @@ package views.manage_school_class.student_forms;
 
 import java.util.UUID;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
+import entities.SchoolClass;
 import entities.Student;
 import models.StudentModel;
 import utils.FormUtils;
@@ -15,7 +17,7 @@ public class EditStudentForm extends StudentForm {
 	StudentModel studentModel;
 	UUID studentId;
 
-	public EditStudentForm(JComponent parent, StudentModel studentModel, Student s) {
+	public EditStudentForm(JComponent parent, StudentModel studentModel, Student s, JComboBox<SchoolClass> schoolClassComboBox) {
 		super(parent, "Modifica studente");
 		
 		this.studentModel = studentModel;
@@ -23,7 +25,11 @@ public class EditStudentForm extends StudentForm {
 		
 		firstNameTxt.setText(s.getFirstName());
 		lastNameTxt.setText(s.getLastName());
-		schoolClassCmbBox.addItem(s.getSchoolClassName());
+		for (int i = 0; i < schoolClassComboBox.getItemCount(); i++) {
+			super.schoolClassCmbBox.addItem(schoolClassComboBox.getItemAt(i).getName());
+		}
+		super.schoolClassCmbBox.setSelectedIndex(schoolClassComboBox.getSelectedIndex());
+		super.schoolClassCmbBox.setEnabled(true);
 	}
 
 	@Override

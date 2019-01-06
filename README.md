@@ -1,0 +1,1 @@
+Scarica il JAR [cliccando qui](https://bitbucket.org/riccardograziosi/gestionale-verifiche/downloads/Gestionale%20Verifiche.jar).

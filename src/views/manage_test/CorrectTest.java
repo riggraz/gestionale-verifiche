@@ -183,9 +183,10 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 		for(int i =0;i<nameList.size();i++) {
 			singlePersonPnl = new JPanel();
 			singlePersonPnl.setLayout(new BoxLayout(singlePersonPnl,BoxLayout.LINE_AXIS));
-			singlePersonPnl.setMaximumSize(new Dimension(400, 30));
+			singlePersonPnl.setMaximumSize(new Dimension(400, 27));
 			
 			personPnl = new JPanel(new GridLayout(1, 2, 80, 0));
+			personPnl.setPreferredSize(new Dimension(400, 27));
 			personPnl.add(nameList.get(i));
 			personPnl.add(voteListTxf.get(i));
 			

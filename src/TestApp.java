@@ -8,7 +8,7 @@ public class TestApp {
 			public void run() {
 				try {					
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					UIManager.put("OptionPane.yesButtonText", "Sì");
+					UIManager.put("OptionPane.yesButtonText", "Si");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

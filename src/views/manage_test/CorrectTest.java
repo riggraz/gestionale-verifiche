@@ -209,6 +209,7 @@ public class CorrectTest extends JFrame  implements ActionListener, ItemListener
 
 		JScrollPane voteScrollPane = new JScrollPane(votePnl);
 		voteScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		voteScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 		setBorders();
 		upgrateBtn = new JButton("Correggi");

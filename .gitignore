@@ -2,4 +2,5 @@
 *.classpath
 *.db
 *.png
+!/screenshots/*
 .DS_Store
